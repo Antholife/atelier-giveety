@@ -4,9 +4,7 @@ import {
   AutoAwesome,
   ChevronLeft,
   ChevronRight,
-  DarkMode,
   Favorite,
-  LightMode,
   List as ListIcon,
   Place,
 } from "@mui/icons-material";
@@ -17,7 +15,6 @@ import {
   Menu,
   MenuItem,
   Stack,
-  Switch,
   TextField,
   ThemeProvider,
   Typography,
@@ -107,8 +104,10 @@ import WireframeToastStack from "./WireframeToastStack";
 import WireframeUpgradeBanner from "./WireframeUpgradeBanner";
 import WireframeWelcomeBanner from "./WireframeWelcomeBanner";
 import DesignKitLiquidGlassPageEdges from "./DesignKitLiquidGlassPageEdges";
+import DesignKitPreviewHeaderThemeToggle from "./DesignKitPreviewHeaderThemeToggle";
 import DesignKitWelcomeSlide from "./DesignKitWelcomeSlide";
 import { designKitPalette } from "./designKitPalette";
+import { useDesignKitPreviewHeaderSlot } from "./designKitPreviewHeaderSlot";
 import { createDesignKitPreviewTheme } from "./designKitPreviewTheme";
 import { MAIN_CONTENT_PADDING_TOP } from "@/adapter/ui/utils/layoutConstants";
 import { useIsMobile } from "@/adapter/ui/utils/mediaQueries";
@@ -973,6 +972,8 @@ function InsightCard({
 }
 
 export default function DesignKitPreview() {
+  const headerSlotCtx = useDesignKitPreviewHeaderSlot();
+  const setAsideLeftOfLangSwitcher = headerSlotCtx?.setAsideLeftOfLangSwitcher;
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -995,6 +996,18 @@ export default function DesignKitPreview() {
       /* ignore */
     }
   }, []);
+
+  useEffect(() => {
+    if (!setAsideLeftOfLangSwitcher) return;
+    setAsideLeftOfLangSwitcher(
+      <ThemeProvider theme={previewTheme}>
+        <DesignKitPreviewHeaderThemeToggle darkMode={darkMode} onDarkModeChange={onDarkModeChange} />
+      </ThemeProvider>,
+    );
+    return () => {
+      setAsideLeftOfLangSwitcher(null);
+    };
+  }, [setAsideLeftOfLangSwitcher, previewTheme, darkMode, onDarkModeChange]);
 
   return (
     <ThemeProvider theme={previewTheme}>
@@ -1137,58 +1150,6 @@ function DesignKitPreviewContent({
             opacity: bgBlend,
             transition: `opacity ${bgCrossfadeMs}ms cubic-bezier(0.4, 0, 0.2, 1)`,
             willChange: "opacity",
-          }}
-        />
-      </Box>
-      <Box
-        role="group"
-        aria-label="Thème du Design Kit"
-        sx={{
-          position: "fixed",
-          top: { xs: 10, sm: 14 },
-          right: { xs: 10, sm: 18 },
-          zIndex: 1400,
-          display: "flex",
-          alignItems: "center",
-          gap: 0.75,
-          pl: 1.25,
-          pr: 1,
-          py: 0.5,
-          borderRadius: 999,
-          bgcolor: alpha(dk.frost, theme.palette.mode === "dark" ? 0.08 : 0.42),
-          border: `1px solid ${alpha(dk.frost, theme.palette.mode === "dark" ? 0.22 : 0.45)}`,
-          backdropFilter: "blur(16px) saturate(165%)",
-          WebkitBackdropFilter: "blur(16px) saturate(165%)",
-          boxShadow: [
-            `0 10px 40px ${alpha("#000", theme.palette.mode === "dark" ? 0.35 : 0.08)}`,
-            `inset 0 1px 0 ${alpha(dk.frost, 0.4)}`,
-          ],
-        }}
-      >
-        <LightMode
-          sx={{
-            fontSize: 19,
-            color: darkMode ? "text.disabled" : "primary.main",
-            transition: "color 0.2s ease",
-          }}
-        />
-        <Switch
-          size="small"
-          checked={darkMode}
-          onChange={(_, v) => onDarkModeChange(v)}
-          inputProps={{ "aria-label": "Activer le thème sombre sur la démo Design Kit" }}
-          sx={{
-            "& .MuiSwitch-switchBase.Mui-checked": { color: theme.palette.primary.main },
-            "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-              bgcolor: alpha(theme.palette.primary.main, 0.5),
-            },
-          }}
-        />
-        <DarkMode
-          sx={{
-            fontSize: 19,
-            color: darkMode ? "primary.main" : "text.disabled",
-            transition: "color 0.2s ease",
           }}
         />
       </Box>

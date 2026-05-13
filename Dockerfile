@@ -56,9 +56,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV SKIP_BUILD_STATIC_GENERATION=true
 ENV CI=true
-# Enable Next.js `output: "standalone"` so the prod image stays minimal.
-ENV BUILD_STANDALONE=true
-
 # Copy only production-necessary files for build (exclude tests, tools, docs)
 # Note: .yarn/install-state.gz and next-env.d.ts are gitignored (generated files)
 COPY --link package.json yarn.lock .yarnrc.yml ./

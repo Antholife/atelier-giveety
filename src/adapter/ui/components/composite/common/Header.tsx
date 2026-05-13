@@ -27,6 +27,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { type MouseEvent, type ReactNode, useCallback, useMemo, useState } from "react";
 import { LanguageSwitcher } from "../../basic/common";
+import { useDesignKitPreviewHeaderSlot } from "../../basic/designKit/designKitPreviewHeaderSlot";
 
 function MarketingLink({
   href,
@@ -238,6 +239,8 @@ function Header() {
     [t],
   );
 
+  const designKitPreviewHeaderSlot = useDesignKitPreviewHeaderSlot();
+
   const contactDropdownMinWidth = "320px";
 
   const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
@@ -421,7 +424,8 @@ function Header() {
                 </Box>
               </Box>
             </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: { xs: 1, md: 1.25 } }}>
+              {designKitPreviewHeaderSlot?.asideLeftOfLangSwitcher ?? null}
               <LanguageSwitcher />
             </Box>
           </Box>
@@ -449,7 +453,17 @@ function Header() {
                 <Image src={giveetyLogo as string} alt="Giveety" fill sizes="112px" style={{ objectFit: "contain" }} />
               </Box>
             </MarketingLink>
-            <Box sx={{ minWidth: "40px", display: "flex", justifyContent: "flex-end", width: 72 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-end",
+                gap: 0.75,
+                flexShrink: 0,
+                minWidth: 0,
+              }}
+            >
+              {designKitPreviewHeaderSlot?.asideLeftOfLangSwitcher ?? null}
               <LanguageSwitcher />
             </Box>
           </Box>

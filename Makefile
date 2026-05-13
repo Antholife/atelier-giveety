@@ -37,18 +37,6 @@ wait_nextjs_ready:
 sh: ## Open a shell inside the container
 	docker compose exec front-end sh
 
-add-pkg: ## Add a production package inside the container
-	@read -p "🔤 Enter the package name: " PKG && \
-	if [ -n "$$PKG" ]; then docker compose exec front-end yarn add "$$PKG"; fi
-
-add-pkg-D: ## Add a dev package inside the container
-	@read -p "🔤 Enter the dev package name: " PKG && \
-	if [ -n "$$PKG" ]; then docker compose exec front-end yarn add -D "$$PKG"; fi
-
-remove-pkg: ## Remove a package inside the container
-	@read -p "🔤 Enter the package name to remove: " PKG && \
-	if [ -n "$$PKG" ]; then docker compose exec front-end yarn remove "$$PKG"; fi
-
 down:
 	docker compose down
 
@@ -72,7 +60,7 @@ check: lint type-check
 # ---------- DevOps (optional Docker registry) ----------
 
 build-image:
-	docker build --platform linux/amd64 --provenance=false -t git.tech-id.org:5050/devops/registry/giveety_attestation/front-end:$(VERSION) -f Dockerfile . --target prod
+	docker build --platform linux/amd64 --provenance=false -t git.tech-id.org:5050/devops/registry/giveety_V2/design_kit_anthony_chahat:$(VERSION) -f Dockerfile . --target prod
 
 push-image:
-	docker push git.tech-id.org:5050/devops/registry/giveety_attestation/front-end:$(VERSION)
+	docker push git.tech-id.org:5050/devops/registry/giveety_V2/design_kit_anthony_chahat:$(VERSION)

@@ -5,6 +5,7 @@ import { useIsMobile } from "@/adapter/ui/utils/mediaQueries";
 import { Box } from "@mui/material";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
+import { DesignKitPreviewHeaderSlotProvider } from "../basic/designKit/designKitPreviewHeaderSlot";
 import { Footer } from "../basic/common";
 import Header from "./common/Header";
 
@@ -58,10 +59,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <Box sx={containerSx}>
-      <Header />
-      <Box component="main" sx={mainSx}>
-        {children}
-      </Box>
+      <DesignKitPreviewHeaderSlotProvider>
+        <Header />
+        <Box component="main" sx={mainSx}>
+          {children}
+        </Box>
+      </DesignKitPreviewHeaderSlotProvider>
       <Footer />
     </Box>
   );
