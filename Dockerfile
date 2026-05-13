@@ -24,7 +24,7 @@ FROM base AS dev_common
 
 # Copy source code and install dependencies
 # Note: In docker-compose, this is OVERRIDDEN with volume mounts for live reload
-COPY --link apps/front-end/ ./
+COPY --link . ./
 
 # Install deps during build for CI/CD (no volume mounts in CI)
 RUN yarn install && yarn cache clean
@@ -56,14 +56,16 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV SKIP_BUILD_STATIC_GENERATION=true
 ENV CI=true
+# Enable Next.js `output: "standalone"` so the prod image stays minimal.
+ENV BUILD_STANDALONE=true
 
 # Copy only production-necessary files for build (exclude tests, tools, docs)
 # Note: .yarn/install-state.gz and next-env.d.ts are gitignored (generated files)
-COPY --link apps/front-end/package.json apps/front-end/yarn.lock apps/front-end/.yarnrc.yml ./
-COPY --link apps/front-end/.yarn/patches ./.yarn/patches
-COPY --link apps/front-end/next.config.ts apps/front-end/tsconfig.json ./
-COPY --link apps/front-end/public public/
-COPY --link apps/front-end/src src/
+COPY --link package.json yarn.lock .yarnrc.yml ./
+COPY --link .yarn/patches ./.yarn/patches
+COPY --link next.config.ts tsconfig.json ./
+COPY --link public public/
+COPY --link src src/
 
 RUN yarn install && yarn cache clean
 

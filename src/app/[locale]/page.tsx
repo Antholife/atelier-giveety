@@ -5,6 +5,6 @@ export function generateMetadata() {
   return createMetadataForPage("atelier-ui-ux");
 }
 
-export default function AtelierUiUxPage() {
+export default function AtelierPage() {
   return <DesignKitPreview />;
 }

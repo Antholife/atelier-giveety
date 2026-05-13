@@ -8,10 +8,10 @@ services:
     image: front-end
     build:
       context: .
-      dockerfile: apps/front-end/Dockerfile
+      dockerfile: Dockerfile
       target: development
     restart: always
     ports:
       - "${NEXT_PORT:-3000}:3000"
     volumes:
-      - ./apps/front-end:/srv/app
+      - .:/srv/app

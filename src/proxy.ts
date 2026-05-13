@@ -72,7 +72,7 @@ export async function proxy(req: NextRequest) {
  *
  * @example
  * ```typescript
- * // Matches: /, /fr/atelier-ui-ux, /en/ui-ux-lab
+ * // Matches: /, /fr, /en
  * // Excludes: /api/users, /_next/static, /favicon.ico
  * ```
  */

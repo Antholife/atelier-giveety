@@ -29,7 +29,7 @@ import { i18nRouting } from "./routing";
  *
  * function MyComponent() {
  *   const router = useRouter();
- *   return <Link href="/atelier-ui-ux">Go to UI/UX lab</Link>;
+ *   return <Link href="/">Go to home</Link>;
  * }
  * ```
  */

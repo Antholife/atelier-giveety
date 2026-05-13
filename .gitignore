@@ -1,7 +1,3 @@
-# Nx
-.nx/cache
-.nx/workspace-data
-
 # Dependencies
 node_modules
 
@@ -22,9 +18,7 @@ node_modules
 .idea/
 .next
 .yarn/install-state.gz
-/yarn.lock
 
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
-apps/front-end/.yarn/install-state.gz
