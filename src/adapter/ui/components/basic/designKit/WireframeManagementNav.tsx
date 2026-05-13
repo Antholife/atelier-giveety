@@ -16,25 +16,42 @@ import { alpha } from "@mui/material/styles";
 import { useCallback, useId, useMemo, useState } from "react";
 import { designKitPalette } from "./designKitPalette";
 
+type NavLink = string | { label: string; badge?: number };
+
 type WireframeManagementNavProps = {
   initials: string;
   spaceTag: string;
-  links: readonly [string, string, string];
+  links: readonly NavLink[];
+  spaceOptions?: readonly string[];
+  /** Barre type app shell : coins plats, bord bas seulement, sans inset latéral (ex. sous header Giveety plein écran). */
+  fullBleedToolbar?: boolean;
 };
 
-const spaceOptions = ["Espace Céleste", "Espace Souterrain", "Espace Flottant"] as const;
+function normalizeLink(link: NavLink): { label: string; badge?: number } {
+  return typeof link === "string" ? { label: link } : link;
+}
+
+const DEFAULT_SPACE_OPTIONS = [
+  "Espace Céleste",
+  "Espace Souterrain",
+  "Espace Flottant",
+] as const;
 
 export default function WireframeManagementNav({
   initials,
   spaceTag: initialSpaceTag,
   links,
+  spaceOptions = DEFAULT_SPACE_OPTIONS,
+  fullBleedToolbar = false,
 }: WireframeManagementNavProps) {
   const theme = useTheme();
   const dk = useMemo(() => designKitPalette(theme), [theme]);
   const menuId = useId();
   const [profileAnchor, setProfileAnchor] = useState<HTMLElement | null>(null);
   const [spaceAnchor, setSpaceAnchor] = useState<HTMLElement | null>(null);
-  const [activeLink, setActiveLink] = useState<string>(links[0]);
+  const [activeLink, setActiveLink] = useState<string>(
+    () => normalizeLink(links[0]).label,
+  );
   const [currentSpace, setCurrentSpace] = useState(initialSpaceTag);
   const [snackbar, setSnackbar] = useState<string | null>(null);
 
@@ -51,17 +68,22 @@ export default function WireframeManagementNav({
       <Box
         sx={{
           width: "100%",
-          border: `1px solid ${alpha(dk.border, 0.6)}`,
-          borderRadius: 2,
-          px: 2,
-          py: 1.5,
+          border: fullBleedToolbar
+            ? "none"
+            : `1px solid ${alpha(dk.border, 0.6)}`,
+          borderRadius: fullBleedToolbar ? 0 : 2,
+          borderBottom: fullBleedToolbar
+            ? `1px solid ${alpha(dk.border, 0.22)}`
+            : undefined,
+          px: fullBleedToolbar ? { xs: 1.75, sm: 2.25 } : 2,
+          py: fullBleedToolbar ? 1.1 : 1.5,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           flexWrap: "wrap",
-          gap: 2,
+          gap: fullBleedToolbar ? { xs: 1.25, sm: 2 } : 2,
           background: `linear-gradient(90deg, ${dk.surface} 0%, ${alpha(dk.primaryLight, 0.5)} 55%, ${alpha(dk.surfaceMuted, 0.9)} 100%)`,
-          boxShadow: `inset 0 1px 0 ${alpha(dk.white, 0.7)}`,
+          boxShadow: fullBleedToolbar ? "none" : `inset 0 1px 0 ${alpha(dk.white, 0.7)}`,
         }}
       >
         <Stack direction="row" alignItems="center" spacing={2} flexWrap="wrap">
@@ -131,37 +153,71 @@ export default function WireframeManagementNav({
         </Stack>
         <Stack
           direction="row"
-          spacing={4}
+          spacing={{ xs: 1.5, sm: 2.25, md: 3 }}
+          rowGap={1}
+          useFlexGap
           flexWrap="wrap"
+          alignItems="center"
           sx={{ ml: { xs: 0, md: "auto" } }}
         >
-          {links.map((label) => {
+          {links.map((raw) => {
+            const { label, badge } = normalizeLink(raw);
             const active = activeLink === label;
             return (
-              <Link
+              <Stack
                 key={label}
-                component="button"
-                type="button"
-                underline="always"
-                onClick={() => {
-                  setActiveLink(label);
-                  setSnackbar(`Section « ${label} » (démo)`);
-                }}
-                sx={{
-                  color: active ? dk.tertiary : dk.text,
-                  fontWeight: active ? 800 : 500,
-                  fontSize: 14,
-                  cursor: "pointer",
-                  border: "none",
-                  background: "none",
-                  p: 0,
-                  fontFamily: theme.typography.fontFamily,
-                  textDecorationColor: active ? dk.tertiary : alpha(dk.border, 0.4),
-                  textUnderlineOffset: 5,
-                }}
+                direction="row"
+                alignItems="center"
+                spacing={0.75}
               >
-                {label}
-              </Link>
+                <Link
+                  component="button"
+                  type="button"
+                  underline="always"
+                  onClick={() => {
+                    setActiveLink(label);
+                    setSnackbar(`Section « ${label} » (démo)`);
+                  }}
+                  sx={{
+                    color: active ? dk.tertiary : "primary.main",
+                    fontWeight: active ? 800 : 600,
+                    fontSize: 14,
+                    cursor: "pointer",
+                    border: "none",
+                    background: "none",
+                    p: 0,
+                    fontFamily: theme.typography.fontFamily,
+                    textDecorationColor: active
+                      ? dk.tertiary
+                      : alpha(theme.palette.primary.main, 0.35),
+                    textUnderlineOffset: 5,
+                  }}
+                >
+                  {label}
+                </Link>
+                {badge ? (
+                  <Box
+                    component="span"
+                    sx={{
+                      minWidth: 18,
+                      height: 18,
+                      px: 0.6,
+                      borderRadius: 999,
+                      bgcolor: dk.tertiary,
+                      color: dk.white,
+                      fontSize: 10.5,
+                      fontWeight: 800,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      lineHeight: 1,
+                      fontFamily: theme.typography.fontFamily,
+                    }}
+                  >
+                    {badge}
+                  </Box>
+                ) : null}
+              </Stack>
             );
           })}
         </Stack>

@@ -8,7 +8,7 @@ import {
   FilterAlt,
   Place,
 } from "@mui/icons-material";
-import { Box, Chip, Menu, MenuItem, Stack, Typography, useTheme } from "@mui/material";
+import { Box, Chip, Menu, MenuItem, Snackbar, Stack, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { designKitPalette } from "./designKitPalette";
@@ -29,6 +29,7 @@ export default function WireframeFilterBar() {
   const dk = useMemo(() => designKitPalette(theme), [theme]);
   const [active, setActive] = useState<Active>({ category: "Solidarité", distance: "< 15 km" });
   const [anchor, setAnchor] = useState<{ key: FilterKey; el: HTMLElement } | null>(null);
+  const [snack, setSnack] = useState<string | null>(null);
 
   const open = useCallback((key: FilterKey, el: HTMLElement) => {
     setAnchor({ key, el });
@@ -44,12 +45,17 @@ export default function WireframeFilterBar() {
         else next[key] = value;
         return next;
       });
+      const label = OPTIONS[key].label;
+      setSnack(value === null ? `${label} : critère effacé (démo)` : `${label} · ${value} (démo)`);
       close();
     },
     [close],
   );
 
-  const reset = useCallback(() => setActive({}), []);
+  const reset = useCallback(() => {
+    setActive({});
+    setSnack("Tous les filtres réinitialisés (démo)");
+  }, []);
 
   return (
     <Box
@@ -121,6 +127,13 @@ export default function WireframeFilterBar() {
             ))
           : null}
       </Menu>
+      <Snackbar
+        open={Boolean(snack)}
+        autoHideDuration={2400}
+        onClose={() => setSnack(null)}
+        message={snack}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Box>
   );
 }

@@ -27,7 +27,25 @@ function buildDays(weekOffset: number) {
   });
 }
 
-export default function WireframeCalendarStrip() {
+export type WireframeCalendarStripProps = {
+  title?: string;
+  /** Sous-titre ; omis = mois de la plage affichée ; `null` pour le masquer */
+  caption?: string | null;
+  /** Cellules et marges plus grandes (ex. bloc pleine largeur sur fiche mission) */
+  comfortable?: boolean;
+  /** Jours plus petits, paddings réduits — utile dans une colonne étroite */
+  dense?: boolean;
+  /** Moins de chrome (ombre) quand le strip est embarqué dans une autre carte */
+  embedded?: boolean;
+};
+
+export default function WireframeCalendarStrip({
+  title,
+  caption,
+  comfortable,
+  dense,
+  embedded,
+}: WireframeCalendarStripProps = {}) {
   const theme = useTheme();
   const dk = useMemo(() => designKitPalette(theme), [theme]);
   const [weekOffset, setWeekOffset] = useState(0);
@@ -39,37 +57,64 @@ export default function WireframeCalendarStrip() {
   const keyOf = useCallback((d: Date) => d.toDateString(), []);
 
   const monthLabel = `${MONTH_NAMES[days[0].getMonth()]} ${days[0].getFullYear()}`;
+  const heading = title ?? "Choisir un créneau";
+  const captionText = caption === undefined ? monthLabel : caption;
+
+  const isComfortable = Boolean(comfortable);
+  const isDense = Boolean(dense) && !isComfortable;
+
+  const dayWidth = isComfortable ? 68 : isDense ? 42 : 56;
+  const dayPy = isComfortable ? 1.85 : isDense ? 1 : 1.5;
+  const dayNumFs = isComfortable ? 21 : isDense ? 14 : 18;
+  const dayLetterFs = isComfortable ? 11 : isDense ? 9 : undefined;
+  const dot = isComfortable ? 6 : isDense ? 4 : 5;
+  const rowGap = isComfortable ? 1.25 : isDense ? 0.5 : 1;
 
   return (
     <Box
       sx={{
-        borderRadius: 3,
-        bgcolor: dk.white,
-        border: `1px solid ${alpha(dk.border, 0.18)}`,
-        boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
-        p: { xs: 2, sm: 2.5 },
+        borderRadius: embedded ? 2 : 3,
+        bgcolor: embedded ? "transparent" : dk.white,
+        border: embedded ? "none" : `1px solid ${alpha(dk.border, 0.18)}`,
+        boxShadow: embedded ? "none" : `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
+        p: isComfortable
+          ? { xs: 2, sm: 2.75 }
+          : isDense
+            ? { xs: 1, sm: 1.25 }
+            : { xs: 2, sm: 2.5 },
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
-        <Box>
-          <Typography sx={{ fontWeight: 800, color: "primary.main" }}>
-            Choisir un créneau
+      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: isComfortable ? 1.75 : isDense ? 1 : 1.5 }}>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography
+            sx={{
+              fontWeight: 800,
+              color: "primary.main",
+              fontSize: isComfortable ? { xs: 17, sm: 20 } : isDense ? 13 : 18,
+            }}
+          >
+            {heading}
           </Typography>
-          <Typography variant="caption" sx={{ color: "text.secondary", fontWeight: 600 }}>
-            {monthLabel}
-          </Typography>
+          {captionText != null && captionText !== "" ? (
+            <Typography
+              variant="caption"
+              sx={{ color: "text.secondary", fontWeight: 600, fontSize: isComfortable ? 13 : undefined }}
+            >
+              {captionText}
+            </Typography>
+          ) : null}
         </Box>
-        <Stack direction="row" spacing={0.5}>
+        <Stack direction="row" spacing={0.25} flexShrink={0}>
           <IconButton size="small" onClick={() => setWeekOffset((w) => w - 1)} aria-label="Semaine précédente">
-            <ChevronLeft />
+            <ChevronLeft fontSize={isComfortable ? "medium" : isDense ? "small" : "medium"} />
           </IconButton>
           <IconButton size="small" onClick={() => setWeekOffset((w) => w + 1)} aria-label="Semaine suivante">
-            <ChevronRight />
+            <ChevronRight fontSize={isComfortable ? "medium" : isDense ? "small" : "medium"} />
           </IconButton>
         </Stack>
       </Stack>
 
-      <Box sx={{ display: "flex", gap: 1, overflowX: "auto", pb: 1 }}>
+      <Box sx={{ display: "flex", gap: rowGap, overflowX: "auto", pb: 0.75, mx: isDense ? -0.25 : 0 }}>
         {days.map((d, i) => {
           const k = keyOf(d);
           const isToday = k === todayKey;
@@ -90,9 +135,9 @@ export default function WireframeCalendarStrip() {
               }}
               sx={{
                 flex: "0 0 auto",
-                width: 56,
-                py: 1.5,
-                borderRadius: 2,
+                width: dayWidth,
+                py: dayPy,
+                borderRadius: isDense ? 1.5 : isComfortable ? 2.5 : 2,
                 textAlign: "center",
                 cursor: "pointer",
                 bgcolor: isSelected ? dk.surfaceStrong : alpha(dk.surfaceMuted, 0.3),
@@ -106,20 +151,20 @@ export default function WireframeCalendarStrip() {
                 "&:focus-visible": { boxShadow: `0 0 0 3px ${alpha(dk.tertiary, 0.4)}` },
               }}
             >
-              <Typography variant="caption" sx={{ fontWeight: 800, opacity: 0.8 }}>
+              <Typography variant="caption" sx={{ fontWeight: 800, opacity: 0.8, fontSize: dayLetterFs }}>
                 {dayName}
               </Typography>
-              <Typography sx={{ fontWeight: 800, fontSize: 18, lineHeight: 1 }}>
+              <Typography sx={{ fontWeight: 800, fontSize: dayNumFs, lineHeight: 1 }}>
                 {d.getDate()}
               </Typography>
               {slots > 0 ? (
-                <Stack direction="row" spacing={0.25} justifyContent="center" sx={{ mt: 0.5 }}>
+                <Stack direction="row" spacing={0.25} justifyContent="center" sx={{ mt: isDense ? 0.25 : isComfortable ? 0.6 : 0.5 }}>
                   {Array.from({ length: Math.min(3, slots) }).map((_, idx) => (
                     <Box
                       key={idx}
                       sx={{
-                        width: 5,
-                        height: 5,
+                        width: dot,
+                        height: dot,
                         borderRadius: "50%",
                         bgcolor: isSelected ? dk.white : dk.tertiary,
                       }}
@@ -127,7 +172,7 @@ export default function WireframeCalendarStrip() {
                   ))}
                 </Stack>
               ) : (
-                <Typography variant="caption" sx={{ fontSize: 9, opacity: 0.5 }}>
+                <Typography variant="caption" sx={{ fontSize: isDense ? 8 : isComfortable ? 10 : 9, opacity: 0.5 }}>
                   —
                 </Typography>
               )}
@@ -139,13 +184,13 @@ export default function WireframeCalendarStrip() {
       {selected ? (
         <Box
           sx={{
-            mt: 2,
-            p: 1.5,
+            mt: isComfortable ? 1.75 : isDense ? 1 : 2,
+            p: isComfortable ? 1.75 : isDense ? 1 : 1.5,
             borderRadius: 2,
             bgcolor: alpha(dk.tertiaryLight, 0.5),
             color: "primary.main",
             fontWeight: 700,
-            fontSize: 13,
+            fontSize: isComfortable ? 14 : isDense ? 11 : 13,
           }}
         >
           ✓ Créneau sélectionné — on te confirmera par e-mail (démo).

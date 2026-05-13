@@ -2,22 +2,50 @@
 
 import { ButtonBase, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
+import type { MouseEvent } from "react";
 import { useCallback, useMemo, useState } from "react";
 import { designKitPalette } from "./designKitPalette";
 
 type WireframeFloatingSubNavProps = {
-  /** Les trois vues ; la première est active au montage. */
+  /** Les trois vues ; la première est active au montage si non contrôlé. */
   options: readonly [string, string, string];
+  /** Index actif si le parent pilote la vue. */
+  activeIndex?: number;
+  /** Appelé quand une option est sélectionnée ; avec `activeIndex` défini, mettre à jour l’état parent. */
+  onActiveIndexChange?: (index: number) => void;
+  /**
+   * IDs DOM (sans #) dans le même ordre que `options` : chaque entrée fait office d’ancre
+   * (`href="#..."`) avec scroll fluide au clic (hash mis à jour).
+   */
+  anchorSectionIds?: readonly [string, string, string];
 };
 
-export default function WireframeFloatingSubNav({ options }: WireframeFloatingSubNavProps) {
+export default function WireframeFloatingSubNav({
+  options,
+  activeIndex: controlledActive,
+  onActiveIndexChange,
+  anchorSectionIds,
+}: WireframeFloatingSubNavProps) {
   const theme = useTheme();
   const dk = useMemo(() => designKitPalette(theme), [theme]);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [uncontrolledActive, setUncontrolledActive] = useState(0);
+  const isControlled = controlledActive !== undefined;
+  const activeIndex = isControlled ? controlledActive : uncontrolledActive;
 
-  const select = useCallback((index: number) => {
-    setActiveIndex(index);
-  }, []);
+  const select = useCallback(
+    (index: number) => {
+      const id = anchorSectionIds?.[index];
+      if (id && typeof window !== "undefined" && typeof document !== "undefined") {
+        window.setTimeout(() => {
+          document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+          window.history.replaceState(null, "", `#${id}`);
+        }, 0);
+      }
+      if (!isControlled) setUncontrolledActive(index);
+      onActiveIndexChange?.(index);
+    },
+    [anchorSectionIds, isControlled, onActiveIndexChange],
+  );
 
   return (
     <Typography
@@ -38,11 +66,18 @@ export default function WireframeFloatingSubNav({ options }: WireframeFloatingSu
     >
       {options.map((label, index) => {
         const active = index === activeIndex;
+        const sectionId = anchorSectionIds?.[index];
         return (
           <ButtonBase
-            key={label}
+            key={sectionId ?? `${label}-${String(index)}`}
+            {...(sectionId
+              ? { component: "a" as const, href: `#${sectionId}` }
+              : { component: "button" as const, type: "button" as const })}
             disableRipple
-            onClick={() => select(index)}
+            onClick={(e: MouseEvent) => {
+              if (sectionId) e.preventDefault();
+              select(index);
+            }}
             sx={{
               borderRadius: 9999,
               px: 2.5,
@@ -52,6 +87,7 @@ export default function WireframeFloatingSubNav({ options }: WireframeFloatingSu
               fontFamily: theme.typography.fontFamily,
               color: active ? dk.surfaceStrong : alpha(dk.white, 0.88),
               bgcolor: active ? dk.surfaceAccent : "transparent",
+              textDecoration: "none",
               transition: "background-color 0.15s ease, color 0.15s ease, transform 0.15s ease",
               border: active ? `1px solid ${alpha(dk.white, 0.35)}` : "1px solid transparent",
               "&:hover": {

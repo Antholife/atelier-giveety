@@ -13,12 +13,15 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ComponentType,
   type ReactNode,
 } from "react";
 import type { SvgIconProps } from "@mui/material";
 import WireframeAccessibilityPanel from "./WireframeAccessibilityPanel";
+import WireframeActivitiesHub from "./WireframeActivitiesHub";
+import WireframeActivityCreatorModern from "./WireframeActivityCreatorModern";
 import WireframeAchievementUnlock from "./WireframeAchievementUnlock";
 import WireframeAlertBanner from "./WireframeAlertBanner";
 import WireframeAvailabilityGrid from "./WireframeAvailabilityGrid";
@@ -33,6 +36,7 @@ import WireframeChatbot from "./WireframeChatbot";
 import WireframeChecklist from "./WireframeChecklist";
 import WireframeCommandPalette from "./WireframeCommandPalette";
 import WireframeCommitmentTimeline from "./WireframeCommitmentTimeline";
+import WireframeDashboardV2 from "./WireframeDashboardV2";
 import WireframeContactPicker from "./WireframeContactPicker";
 import WireframeDateRangePicker from "./WireframeDateRangePicker";
 import WireframeDonutChart from "./WireframeDonutChart";
@@ -54,7 +58,10 @@ import WireframeManagementNav from "./WireframeManagementNav";
 import WireframeManagerInbox from "./WireframeManagerInbox";
 import WireframeManagerThread from "./WireframeManagerThread";
 import WireframeMessageReactions from "./WireframeMessageReactions";
+import WireframeMissionCalendar from "./WireframeMissionCalendar";
 import WireframeMissionDetailCard from "./WireframeMissionDetailCard";
+import WireframeMissionDetailPage from "./WireframeMissionDetailPage";
+import WireframeMissionDiscoveryPage from "./WireframeMissionDiscoveryPage";
 import WireframeMissionMap from "./WireframeMissionMap";
 import WireframeNotificationFeed from "./WireframeNotificationFeed";
 import WireframeOnboardingTour from "./WireframeOnboardingTour";
@@ -80,12 +87,86 @@ import WireframeTipsCarousel from "./WireframeTipsCarousel";
 import WireframeToastStack from "./WireframeToastStack";
 import WireframeUpgradeBanner from "./WireframeUpgradeBanner";
 import WireframeWelcomeBanner from "./WireframeWelcomeBanner";
+import DesignKitWelcomeSlide from "./DesignKitWelcomeSlide";
 import { designKitPalette } from "./designKitPalette";
+import { MAIN_CONTENT_PADDING_TOP } from "@/adapter/ui/utils/layoutConstants";
+import { useIsMobile } from "@/adapter/ui/utils/mediaQueries";
+
+/** Hauteur sticky approximative de la nav Contributeur (toolbar full-bleed) pour placer le bandeau Design Kit */
+const DESIGN_KIT_PREVIEW_CONTRIB_NAV_GAP_PX = 56;
 
 type Insights = { works: string; apply: string; why: string };
-type Slide = { label: string; content: ReactNode; insights: Insights };
+type Slide = {
+  label: string;
+  content: ReactNode;
+  /** Si absent, pas de cartes « Ce qui fonctionne / Où / Pourquoi » sous le wireframe */
+  insights?: Insights;
+  fullWidth?: boolean;
+  /** Barre Giveety (WireframeManagementNav) au-dessus du bandeau Design Kit · alignée sous le header app */
+  contribNavDetached?: boolean;
+};
 
 const SLIDES: Slide[] = [
+  {
+    label: "Accueil Design Kit",
+    content: <DesignKitWelcomeSlide />,
+    fullWidth: true,
+  },
+  {
+    label: "Dashboard V2 (page complète)",
+    content: (
+      /* Rendu réel piloté ci-dessous (ref tour + omit nav dupliquée) — placeholder pour garder SLIDES typé */
+      null
+    ),
+    fullWidth: true,
+    contribNavDetached: true,
+    insights: {
+      works: "Top nav (ManagementNav) adaptée avec « Tableau de bord / Notifications / Messagerie / Trouver une activité / Mes récompenses » + badges, ligne d’accueil avec **Partager mon profil** (modale **QR** `WireframeProfileQRThumb` + copie lien), WelcomeBanner dismissible, hero « prochaine contribution », grille de 7 widgets, accordéons ActivitiesHub et MissionCalendar. **Tour guidé** (8 étapes), « Refaire la visite ».",
+      apply: "Page de tableau de bord complète, avec un onboarding qui explique chaque zone in-context — exactement l'expérience d'un bénévole à sa 1re connexion.",
+      why: "La V1 = sidebar gauche + sections plates illisibles + onglets vides. Ici la nav passe en haut (gain d'espace), les sections lourdes sont pliables, chaque composant existant devient widget, et le tour guide remplace toute la documentation que personne ne lit.",
+    },
+  },
+  {
+    label: "Découverte missions · page complète",
+    content: <WireframeMissionDiscoveryPage />,
+    fullWidth: true,
+    insights: {
+      works: "Même ManagementNav avec « Trouver une activité » active, rayon Genève, segmented **Carte / Pour toi / Liste** avec ancres (`#discovery-carte`, `#discovery-pourtoi`, `#discovery-liste`), recherche + filtres, **carte à gauche et fiche mission à droite** (desktop), puis bloc recommandations « Pour toi », puis **liste « Toutes les activités »** en dessous.",
+      apply: "Parcours bénévole après le dashboard : chercher une mission géolocalisée, affiner avec filtres, basculer vue liste/carte/reco, puis lire une fiche et une suggestion suivante sans changer d’URL (wireframe démo).",
+      why: "Le dashboard rassemble tout ; cette page montre une seconde grande surface utilisée très souvent. La cohérence visuelle (palette, chrome, typo) évite que la démo ait l’air d’être deux applis différentes.",
+    },
+  },
+  {
+    label: "Fiche mission · télétravail (CRM / données)",
+    content: <WireframeMissionDetailPage preset="distanceData" />,
+    fullWidth: true,
+    insights: {
+      works: "Fil d’ariane, **hero** (catégories uppercase, titre, org, ligne d’activité, chip certificat, CTA saumon + outline), **barre statut** pleine largeur verte, grille **Savoir-être / Savoir-faire**, description à puces, profil contributeur + langue, **sidebar sticky** dates + télétravail + référent, pied de page structure.",
+      apply: "Page publique ou post-clic recherche pour une mission entièrement **à distance** : réassurance compte contrib, délais de candidature lisibles.",
+      why: "Recolle au wireframe fonctionnel hors design kit tout en gardant palette Giveety (**tertiary** saumon, primary vert, fond page #F2F1ED).",
+    },
+  },
+  {
+    label: "Fiche mission · présentiel (jardinage + carte)",
+    content: <WireframeMissionDetailPage preset="gardenOnsite" />,
+    fullWidth: true,
+    insights: {
+      works:
+        "**Mise en page terrain** : bloc **Compétences** pleine largeur, puis grille **desktop** colonne logistique sticky (~360px) à gauche (dates, places, **avatars** engagés, mini-carte, adresse, référent) + colonne texte à droite. **Sans** grille calendrier sur la page.",
+      apply: "Missions terrain : géolocalisation, places restantes et calendrier d’animations au même endroit que la proposition de valeur.",
+      why: "Deux presets (`distanceData`, `gardenOnsite`) partagent une seule mise en page pour itérer sur le contenu sans dupliquer la structure.",
+    },
+  },
+  {
+    label: "Création activité · page unique (manager)",
+    content: <WireframeActivityCreatorModern />,
+    fullWidth: true,
+    insights: {
+      works: "Remplace le wizard 5 étapes par **3 blocs thématiques** sur une seule page scrollable : offre + certification, profil recherché, logistique. **Barre d’ancres sticky** (pills), **progression %** continue, **aperçu contributeur** fixe à droite (desktop), créneaux en **chips** au lieu du calendrier plein écran, **footer d’actions** collant (brouillon, prévisualiser, publier).",
+      apply: "Parcours manager « nouvelle activité » / brouillon : moins de clics perçus, retour visuel immédiat sur la fiche publique, navigation par saut de section plutôt que Suivant/Suivant.",
+      why: "Les captures V1 = long scroll par étape, récap final illisible, stepper rouge confus, calendrier qui casse le rythme. Ici on **réduit la friction cognitive** : tout est éditable d’un coup, l’utilisateur voit l’impact live, et le récap devient dispensable.",
+    },
+  },
   {
     label: "Welcome Banner",
     content: <WireframeWelcomeBanner />,
@@ -351,6 +432,24 @@ const SLIDES: Slide[] = [
       works: "Mini Gantt horizontal compact, hover sur barres. Style Linear roadmap.",
       apply: "Vue planning des engagements à venir pour bénévoles multi-missions.",
       why: "Évite les chevauchements de missions et donne une vision long terme.",
+    },
+  },
+  {
+    label: "Mission Calendar",
+    content: <WireframeMissionCalendar />,
+    insights: {
+      works: "Vue mois avec barres d'événements multi-jours, filtres = légende, today pill, weekends teintés, panneau de détail du jour. Style Google Calendar / Cron / Linear.",
+      apply: "Espace bénévole et manager : visualiser engagements et dispos en un coup d'œil, filtrer par type, voir les chevauchements.",
+      why: "La V1 entasse les pills dans des cellules sans hiérarchie ; ici les missions deviennent des barres continues, lisibles, filtrables, et la légende remplace une lecture devinette.",
+    },
+  },
+  {
+    label: "Activities Hub",
+    content: <WireframeActivitiesHub />,
+    insights: {
+      works: "Tabs avec compteur + pastille colorée (on voit ce qu'il y a partout), 4 layouts de carte selon le statut (postulation/en cours/à venir/terminée), stats strip en header, empty state avec recos de matching. Style Notion / Linear inbox.",
+      apply: "Page \u00ab Mes activit\u00e9s \u00bb du bénévole. Chaque carte raconte ce qui est à faire MAINTENANT (pointer, préparer, évaluer, télécharger).",
+      why: "La V1 a 5 onglets opaques + une boîte vide quand il n'y a rien. Ici les compteurs donnent la map du parcours, et même un onglet vide propose une action (« voici 3 missions qui matchent »).",
     },
   },
   {
@@ -744,9 +843,27 @@ export default function DesignKitPreview() {
   const theme = useTheme();
   const dk = useMemo(() => designKitPalette(theme), [theme]);
   const [current, setCurrent] = useState(0);
+  const contribNavDetachedTourRef = useRef<HTMLDivElement | null>(null);
+  const isMobileForHeaderOffset = useIsMobile();
+  const appBarStickyTop = isMobileForHeaderOffset
+    ? MAIN_CONTENT_PADDING_TOP.MOBILE
+    : MAIN_CONTENT_PADDING_TOP.DESKTOP;
 
   const total = SLIDES.length;
   const slide = SLIDES[current];
+
+  /** Même retrait horizontal que la zone de contenu (`px` du bloc principal). */
+  const carouselArrowInsetX = useMemo(
+    () =>
+      slide.fullWidth
+        ? { xs: theme.spacing(1), md: theme.spacing(2) }
+        : { xs: theme.spacing(2), md: theme.spacing(6) },
+    [slide.fullWidth, theme],
+  );
+
+  const designKitToolbarSxTop = slide.contribNavDetached
+    ? `calc(${appBarStickyTop} + ${DESIGN_KIT_PREVIEW_CONTRIB_NAV_GAP_PX}px)`
+    : 0;
 
   const goTo = useCallback(
     (idx: number) => {
@@ -773,15 +890,74 @@ export default function DesignKitPreview() {
         position: "relative",
         width: "100%",
         minHeight: "100vh",
+        overflowX: "clip",
         bgcolor: dk.pageBg,
         backgroundImage: `radial-gradient(${alpha(dk.surfaceStrong, 0.06)} 1px, transparent 1px)`,
         backgroundSize: "18px 18px",
       }}
     >
+      {slide.contribNavDetached ? (
+        <Box
+          ref={contribNavDetachedTourRef}
+          key={`dk-preview-contrib-nav-${current}`}
+          sx={{
+            width: "100%",
+            maxWidth: "100%",
+            position: "sticky",
+            top: appBarStickyTop,
+            boxSizing: "border-box",
+            p: 0,
+            zIndex: 11,
+            bgcolor: "transparent",
+            overflow: "visible",
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              willChange: "transform, opacity",
+              animation:
+                "dkPreviewContribNavDrop 0.62s cubic-bezier(0.22, 1, 0.36, 1) both",
+              "@media (prefers-reduced-motion: reduce)": {
+                animation: "none",
+                opacity: 1,
+                transform: "none",
+                willChange: "auto",
+              },
+              "@keyframes dkPreviewContribNavDrop": {
+                from: {
+                  opacity: 0,
+                  /* Glisse depuis juste sous la ligne du header (au-dessus de la position finale) */
+                  transform: "translateY(-36px)",
+                },
+                to: {
+                  opacity: 1,
+                  transform: "translateY(0)",
+                },
+              },
+            }}
+          >
+            <WireframeManagementNav
+              fullBleedToolbar
+              initials="AR"
+              spaceTag="Espace Contributeur"
+              spaceOptions={["Espace Contributeur", "Espace Manager"]}
+              links={[
+                "Tableau de bord",
+                { label: "Notifications", badge: 3 },
+                { label: "Messagerie", badge: 5 },
+                "Trouver une activité",
+                "Mes récompenses",
+              ]}
+            />
+          </Box>
+        </Box>
+      ) : null}
+
       <Box
         sx={{
           position: "sticky",
-          top: 0,
+          top: designKitToolbarSxTop,
           zIndex: 10,
           px: { xs: 2, md: 4 },
           py: 2,
@@ -822,15 +998,14 @@ export default function DesignKitPreview() {
 
       <Box
         sx={{
-          px: { xs: 2, md: 6 },
+          px: slide.fullWidth ? { xs: 1, md: 2 } : { xs: 2, md: 6 },
           py: { xs: 3, md: 4 },
-          pb: { xs: 12, md: 14 },
         }}
       >
         <Box
           key={current}
           sx={{
-            maxWidth: 1200,
+            maxWidth: slide.fullWidth ? "none" : 1200,
             mx: "auto",
             animation: "fadeSlide 0.4s cubic-bezier(.4,1,.4,1)",
             "@keyframes fadeSlide": {
@@ -839,13 +1014,27 @@ export default function DesignKitPreview() {
             },
           }}
         >
-          <Box sx={{ mb: 3 }}>{slide.content}</Box>
+          <Box sx={{ mb: 3 }}>
+            {slide.contribNavDetached ? (
+              <WireframeDashboardV2
+                contribNavTourRef={contribNavDetachedTourRef}
+                hideEmbeddedContribNav
+              />
+            ) : (
+              slide.content
+            )}
+          </Box>
 
+          {slide.insights ? (
           <Stack
             direction={{ xs: "column", md: "row" }}
             spacing={1.5}
             useFlexGap
-            sx={{ alignItems: "stretch" }}
+            sx={{
+              alignItems: "stretch",
+              maxWidth: slide.fullWidth ? 1200 : "none",
+              mx: slide.fullWidth ? "auto" : 0,
+            }}
           >
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <InsightCard
@@ -872,6 +1061,7 @@ export default function DesignKitPreview() {
               />
             </Box>
           </Stack>
+          ) : null}
         </Box>
       </Box>
 
@@ -880,16 +1070,15 @@ export default function DesignKitPreview() {
         aria-label="Précédent"
         sx={{
           position: "fixed",
-          left: { xs: 8, md: 20 },
-          top: "50%",
-          transform: "translateY(-50%)",
+          left: carouselArrowInsetX,
+          bottom: 20,
           zIndex: 20,
           width: 48,
           height: 48,
           bgcolor: alpha(dk.white, 0.9),
           color: "primary.main",
           boxShadow: `0 4px 16px ${alpha(dk.surfaceStrong, 0.18)}`,
-          "&:hover": { bgcolor: dk.white, transform: "translateY(-50%) scale(1.05)" },
+          "&:hover": { bgcolor: dk.white, transform: "scale(1.05)" },
           transition: "all 0.15s ease",
         }}
       >
@@ -901,59 +1090,20 @@ export default function DesignKitPreview() {
         aria-label="Suivant"
         sx={{
           position: "fixed",
-          right: { xs: 8, md: 20 },
-          top: "50%",
-          transform: "translateY(-50%)",
+          right: carouselArrowInsetX,
+          bottom: 20,
           zIndex: 20,
           width: 48,
           height: 48,
           bgcolor: alpha(dk.white, 0.9),
           color: "primary.main",
           boxShadow: `0 4px 16px ${alpha(dk.surfaceStrong, 0.18)}`,
-          "&:hover": { bgcolor: dk.white, transform: "translateY(-50%) scale(1.05)" },
+          "&:hover": { bgcolor: dk.white, transform: "scale(1.05)" },
           transition: "all 0.15s ease",
         }}
       >
         <ChevronRight sx={{ fontSize: 28 }} />
       </IconButton>
-
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: 20,
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: 10,
-          display: "flex",
-          alignItems: "center",
-          gap: 0.5,
-          px: 2,
-          py: 1,
-          borderRadius: 9999,
-          bgcolor: alpha(dk.white, 0.92),
-          boxShadow: `0 4px 16px ${alpha(dk.surfaceStrong, 0.12)}`,
-          backdropFilter: "blur(8px)",
-          maxWidth: "90vw",
-          overflowX: "auto",
-          "&::-webkit-scrollbar": { display: "none" },
-        }}
-      >
-        {SLIDES.map((_, i) => (
-          <Box
-            key={i}
-            onClick={() => goTo(i)}
-            sx={{
-              width: i === current ? 20 : 6,
-              height: 6,
-              borderRadius: 9999,
-              bgcolor: i === current ? dk.surfaceStrong : alpha(dk.border, 0.4),
-              cursor: "pointer",
-              transition: "width 0.3s ease, background 0.2s ease",
-              flexShrink: 0,
-            }}
-          />
-        ))}
-      </Box>
     </Box>
   );
 }

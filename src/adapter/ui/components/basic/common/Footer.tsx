@@ -1,382 +1,517 @@
 "use client";
 
 import giveetyLogo from "@/adapter/ui/assets/giveety.svg";
+import { marketingAbsolute, marketingWithLocale } from "@/adapter/ui/utils/marketingSite";
 import {
-  Email,
-  Facebook,
-  Instagram,
-  LinkedIn,
-  Send,
+  Construction as ConstructionIcon,
+  EmailOutlined as EmailOutlinedIcon,
+  GroupsOutlined,
+  Instagram as InstagramIcon,
+  LinkedIn as LinkedInIcon,
+  SendOutlined as SendOutlinedIcon,
 } from "@mui/icons-material";
-import { Box, Divider, Link, Typography, useTheme } from "@mui/material";
-import { useTranslations } from "next-intl";
+import { Box, Link as MuiLink, Typography, useTheme } from "@mui/material";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { Fragment, ReactNode, useMemo } from "react";
+import type { ReactNode } from "react";
 
-import { capitalize } from "@/domain/services";
-
-/**
- * Footer link structure
- *
- * @property label - Link label text
- * @property href - Link URL
- */
-type FooterLink = {
-  label: string;
-  href: string;
-};
-
-/**
- * Social media link structure
- *
- * @property icon - Icon component for the social media platform
- * @property href - Link URL
- * @property label - Accessibility label
- */
-type SocialLink = {
+type FooterIconLinkProps = {
   icon: ReactNode;
-  href: string;
   label: string;
+  href?: string;
+  disabled?: boolean;
+  alignLeft?: boolean;
 };
 
-/**
- * Footer component
- *
- * Displays the application footer with:
- * - Logo and description
- * - About us links
- * - Services links
- * - Contact information and social media links
- * - Legal links
- *
- * Features a wave design at the top and responsive layout.
- *
- * @returns The rendered footer component
- */
-function Footer() {
+function FooterIconLink({ icon, label, href = "#", disabled = false, alignLeft = false }: FooterIconLinkProps) {
   const theme = useTheme();
-  const t = useTranslations();
+  const white = theme.palette.background.default;
 
-  const aboutUsLinks: FooterLink[] = [
-    { label: t("externalPages.manifest"), href: "#" },
-    { label: t("externalPages.whoAreWe"), href: "#" },
-    { label: t("externalPages.joinUs"), href: "#" },
-    { label: t("externalPages.supportUs"), href: "#" },
-  ];
-
-  const servicesLinks: FooterLink[] = [
-    { label: t("externalPages.forVolunteers"), href: "#" },
-    { label: t("externalPages.forOrganizations"), href: "#" },
-    { label: t("externalPages.pricing"), href: "#" },
-    { label: t("externalPages.resources"), href: "#" },
-  ];
-
-  const socialLinks: SocialLink[] = [
-    { icon: <Instagram />, href: "#", label: "Instagram" },
-    { icon: <Facebook />, href: "#", label: "Facebook" },
-    { icon: <LinkedIn />, href: "#", label: "LinkedIn" },
-  ];
-
-  const legalLinks: FooterLink[] = [
-    { label: t("externalPages.faq"), href: "#" },
-    { label: t("externalPages.termsOfUse"), href: "#" },
-    { label: t("externalPages.privacyPolicy"), href: "#" },
-    { label: t("externalPages.legalNotices"), href: "#" },
-  ];
-
-  const columnStyles = useMemo(
-    () => ({
-      display: "flex",
-      flexDirection: "column" as const,
-      gap: { xs: "12px", sm: "16px" },
-      width: { xs: "100%", md: "224px" },
-      alignItems: "center" as const,
-    }),
-    [],
+  return (
+    <Box
+      component={disabled ? "span" : "a"}
+      href={disabled ? undefined : href}
+      aria-disabled={disabled ? "true" : undefined}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: alignLeft ? { xs: "center", md: "flex-start" } : "center",
+        gap: "10px",
+        mb: "6px",
+        color: white,
+        textDecoration: "none",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.6 : 1,
+        "& .MuiSvgIcon-root": { color: "inherit" },
+        "&:hover": disabled
+          ? {
+              textDecoration: "none !important",
+              color: `${white} !important`,
+            }
+          : {
+              textDecoration: "none",
+              color: `${theme.palette.secondary.main} !important`,
+              "& .MuiTypography-root, & .MuiSvgIcon-root": {
+                color: `${theme.palette.secondary.main} !important`,
+              },
+            },
+      }}
+    >
+      {icon}
+      <Typography
+        sx={{
+          fontFamily: "var(--font-mulish), sans-serif",
+          fontSize: "13px",
+          lineHeight: 1.2,
+          color: "inherit !important",
+        }}
+      >
+        {label}
+      </Typography>
+    </Box>
   );
+}
 
-  const titleStyles = useMemo(
-    () => ({
-      color: theme.palette.background.default,
-      fontSize: { xs: "16px", sm: "18px" },
-      fontWeight: 700,
-      textAlign: "center" as const,
-    }),
-    [theme.palette.background.default],
-  );
+type FooterColumnProps = {
+  title: string;
+  links: { label: string; href?: string; disabled?: boolean }[];
+};
 
-  const dividerStyles = useMemo(
-    () => ({
-      backgroundColor: theme.palette.background.default,
-      width: "100%",
-      marginBottom: { xs: 0.5, sm: 1 },
-    }),
-    [theme.palette.background.default],
-  );
+function FooterColumn({ title, links }: FooterColumnProps) {
+  const theme = useTheme();
+  const white = theme.palette.background.default;
+  const secondaryHover = theme.palette.secondary.main;
 
-  const linkStyles = useMemo(
-    () => ({
-      color: theme.palette.background.default,
-      textDecoration: "none",
-      fontSize: { xs: "12px", sm: "14px" },
-      transition: "color 0.3s ease",
-      textAlign: "center" as const,
-      "&:hover": {
-        color: theme.palette.secondary.main,
-      },
-    }),
-    [theme.palette.background.default, theme.palette.secondary.main],
-  );
-
-  const textStyles = useMemo(
-    () => ({
-      color: theme.palette.background.default,
-      fontSize: { xs: "12px", sm: "14px" },
-      lineHeight: { xs: "18px", sm: "20px" },
-      textAlign: "center",
-    }),
-    [theme.palette.background.default],
-  );
-
-  const renderColumn = (
-    title: string | ReactNode,
-    content: ReactNode,
-    isLogoColumn = false,
-  ) => (
-    <Box sx={columnStyles}>
-      {isLogoColumn ? (
-        <Box
+  return (
+    <Box sx={{ textAlign: "center" }}>
+      <Box
+        sx={{
+          minHeight: { xs: "30px", md: "44px" },
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          mb: { xs: "4px", md: "10px" },
+        }}
+      >
+        <Typography
           sx={{
-            height: { xs: "auto", sm: "20px" },
-            marginBottom: { xs: 0.5, sm: 1 },
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "visible",
+            fontFamily: "var(--font-mulish), sans-serif",
+            fontSize: "16px",
+            lineHeight: 1.2,
+            fontWeight: 600,
+            color: `${white} !important`,
           }}
         >
           {title}
-        </Box>
-      ) : (
-        <Typography sx={titleStyles}>{title}</Typography>
-      )}
-      <Divider sx={dividerStyles} />
-      {content}
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          borderTop: { xs: "1px solid #FFFFFF", md: "1px solid rgba(255,255,255,0.45)" },
+          width: { xs: "200px", md: "auto" },
+          mx: "auto",
+          mb: { xs: "6px", md: "12px" },
+        }}
+      />
+      <Box sx={{ display: "flex", flexDirection: "column", gap: "8px", alignItems: "center" }}>
+        {links.map((link) => (
+          <Box
+            key={link.label}
+            component={link.disabled ? "span" : "a"}
+            href={link.disabled ? undefined : link.href}
+            aria-disabled={link.disabled ? "true" : undefined}
+            sx={{
+              fontFamily: "var(--font-mulish), sans-serif",
+              fontSize: "13px",
+              lineHeight: 1.2,
+              color: `${white} !important`,
+              textDecoration: "none",
+              cursor: link.disabled ? "not-allowed" : "pointer",
+              opacity: link.disabled ? 0.6 : 1,
+              "&:hover": link.disabled
+                ? { textDecoration: "none !important", color: `${white} !important` }
+                : { textDecoration: "none", color: `${secondaryHover} !important` },
+            }}
+          >
+            {link.label}
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
+}
 
-  const renderLinkList = (links: FooterLink[]) => (
-    <Box
+type FooterBottomLinkProps = {
+  label: string;
+  mobileLabel?: string;
+  href: string;
+};
+
+function FooterBottomLink({ label, mobileLabel, href }: FooterBottomLinkProps) {
+  const theme = useTheme();
+  const secondaryHover = theme.palette.secondary.main;
+  const white = theme.palette.background.default;
+
+  return (
+    <MuiLink
+      href={href}
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: { xs: 1, sm: 1.5 },
+        fontFamily: "var(--font-mulish), sans-serif",
+        fontSize: "13px",
+        lineHeight: 1.2,
+        color: `${white} !important`,
+        textDecoration: "none !important",
+        "&:hover": { color: `${secondaryHover} !important`, textDecoration: "none !important" },
       }}
     >
-      {links.map((link, index) => (
-        <Link key={index} href={link.href} sx={linkStyles}>
-          {link.label}
-        </Link>
-      ))}
+      <Box component="span" sx={{ display: { xs: "inline", md: "none" } }}>
+        {mobileLabel ?? label}
+      </Box>
+      <Box component="span" sx={{ display: { xs: "none", md: "inline" } }}>
+        {label}
+      </Box>
+    </MuiLink>
+  );
+}
+
+function FooterDot() {
+  const theme = useTheme();
+  return (
+    <Box component="span" sx={{ fontFamily: "var(--font-mulish), sans-serif", fontSize: "13px", color: theme.palette.background.default }}>
+      •
     </Box>
   );
+}
 
-  const waveSvg = `<svg width="100%" height="30" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,20 L45,20 L70,16 L110,20 L160,20 L195,18 L240,20 L290,20 L330,15 L380,20 L430,20 L470,17 L520,20 L580,20 L620,19 L670,20 L730,20 L770,16 L820,20 L880,20 L920,18 L970,20 L1030,20 L1070,15 L1120,20 L1180,20 L1220,17 L1280,20 L1350,20 L1390,19 L1440,20 L1500,20 L1540,16 L1590,20 L1650,20 L1690,18 L1740,20 L1800,20 L1840,15 L1890,20 L1950,20 L1990,17 L2040,20 L2100,20 L2140,19 L2190,20 L2250,20 L2290,16 L2340,20 L2400,20 L2440,18 L2490,20 L2550,20 L2590,15 L2640,20 L2700,20 L2740,17 L2790,20 L2850,20 L2890,19 L2940,20 L3000,20 L3040,16 L3090,20 L3150,20 L3190,18 L3250,20 L3300,20 L3340,15 L3400,20 L3400,30 L0,30 Z" fill="black"/></svg>`;
+/**
+ * Pied de page aligné sur le thème Keycloak Giveety (`NavbarFooterDefault`, repo docker).
+ */
+function Footer() {
+  const theme = useTheme();
+  const t = useTranslations("externalPages");
+  const locale = useLocale();
+  const primary = theme.palette.primary.main;
+  const white = theme.palette.background.default;
+
+  const termsHref = marketingWithLocale(locale, "/terms");
+  const privacyHref = marketingWithLocale(locale, "/privacy-policy");
 
   return (
     <Box
       component="footer"
+      role="contentinfo"
       sx={{
-        backgroundColor: theme.palette.primary.main,
-        color: theme.palette.background.default,
-        padding: {
-          xs: "20px 8px",
-          sm: "30px 16px",
-          md: "40px 120px 20px 120px",
-        },
-        marginTop: "auto",
+        width: "100%",
+        backgroundColor: primary,
+        px: { xs: 0, md: 6 },
+        pt: { xs: 0, md: "40px" },
+        pb: { xs: "20px", md: "40px" },
         position: "relative",
+        zIndex: 1,
+        mt: "auto",
+        color: white,
         "&::before": {
           content: '""',
           position: "absolute",
-          top: 1,
           left: 0,
+          top: "-22px",
           width: "100%",
-          height: "30px",
-          backgroundColor: theme.palette.primary.main,
-          maskImage: `url("data:image/svg+xml,${encodeURIComponent(waveSvg)}")`,
-          WebkitMaskImage: `url("data:image/svg+xml,${encodeURIComponent(waveSvg)}")`,
-          maskRepeat: "no-repeat",
-          maskSize: "100% 30px",
-          WebkitMaskRepeat: "no-repeat",
-          WebkitMaskSize: "100% 30px",
-          transform: "translateY(-100%)",
+          height: "24px",
+          background: primary,
+          clipPath:
+            "polygon(0 100%, 0 61%, 3% 43%, 8% 72%, 15% 34%, 19% 67%, 27% 39%, 33% 74%, 41% 36%, 48% 70%, 56% 33%, 62% 75%, 69% 38%, 77% 69%, 84% 35%, 90% 73%, 96% 41%, 100% 54%, 100% 100%)",
+          pointerEvents: "none",
+        },
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+          height: "2px",
+          background: primary,
+          pointerEvents: "none",
+        },
+        "& a": {
+          color: "white !important",
+          textDecoration: "none !important",
+        },
+        "& a:visited": {
+          color: "white !important",
+        },
+        "& a:hover": {
+          color: `${theme.palette.secondary.main} !important`,
+        },
+        "& .MuiTypography-root": {
+          color: "inherit",
         },
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          gap: { xs: 3, sm: 4, md: 6 },
-          marginBottom: { xs: 2, sm: 3, md: 4 },
-          justifyContent: "center",
-          alignItems: "flex-start",
-        }}
-      >
-        {renderColumn(
-          <Box
+      <Box sx={{ maxWidth: "1320px", mx: "auto", display: "flex", flexDirection: "column" }}>
+        <MuiLink
+          href={marketingWithLocale(locale, "/")}
+          sx={{ display: { xs: "flex", md: "none" }, justifyContent: "center", px: "12px", pt: "10px", pb: "6px" }}
+        >
+          <Box sx={{ width: "120px", height: "auto", position: "relative" }}>
+            <Image src={giveetyLogo} alt="Giveety" width={120} height={36} style={{ width: "100%", height: "auto", objectFit: "contain" }} />
+          </Box>
+        </MuiLink>
+        <Box sx={{ display: { xs: "block", md: "none" }, borderTop: "1px solid #FFFFFF", width: "152px", mx: "auto", mb: "10px" }} />
+        <Box sx={{ display: { xs: "block", md: "none" }, px: "12px", mb: "14px", textAlign: "center" }}>
+          <Typography
             sx={{
-              width: { xs: "144px", sm: "180px", md: "216px" },
-              height: { xs: "auto", sm: "auto", md: "72px" },
+              fontFamily: "var(--font-mulish), sans-serif",
+              fontSize: "13px",
+              lineHeight: 1.35,
+              color: white,
+              maxWidth: "290px",
+              mb: "8px",
+              mx: "auto",
             }}
           >
-            <Image
-              src={giveetyLogo}
-              alt="Giveety Logo"
-              width={216}
-              height={72}
-              style={{
-                width: "100%",
-                height: "auto",
-                objectFit: "contain",
+            {t("description1")}
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: "var(--font-mulish), sans-serif",
+              fontSize: "13px",
+              lineHeight: 1.35,
+              color: white,
+              maxWidth: "290px",
+              mx: "auto",
+            }}
+          >
+            {t("description2")}
+          </Typography>
+        </Box>
+        <Box sx={{ display: { xs: "flex", md: "none" }, gap: "12px", mt: "2px", mb: "12px", justifyContent: "center" }}>
+          <MuiLink
+            className="footer-social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://www.instagram.com/giveety.app"
+            sx={{ color: `${white} !important`, display: "inline-flex" }}
+          >
+            <InstagramIcon sx={{ fontSize: "28px" }} />
+          </MuiLink>
+          <MuiLink
+            className="footer-social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://www.linkedin.com/showcase/eternitee-org"
+            sx={{ color: `${white} !important`, display: "inline-flex" }}
+          >
+            <LinkedInIcon sx={{ fontSize: "28px" }} />
+          </MuiLink>
+        </Box>
+
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1.1fr 1fr 1fr 1fr" },
+            gap: { xs: 3, md: 5 },
+            order: { xs: 2, md: 1 },
+          }}
+        >
+          <Box sx={{ display: { xs: "none", md: "block" } }}>
+            <Box
+              sx={{
+                height: "45px",
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+                justifyContent: "center",
+                mb: "10px",
+              }}
+            >
+              <MuiLink
+                href={marketingWithLocale(locale, "/")}
+                aria-label="Home"
+                sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+              >
+                <Box sx={{ width: "168px", height: "auto", position: "relative" }}>
+                  <Image src={giveetyLogo} alt="Giveety" width={168} height={52} style={{ width: "100%", height: "auto" }} />
+                </Box>
+              </MuiLink>
+            </Box>
+            <Box sx={{ display: { xs: "none", md: "block" }, borderTop: "1px solid rgba(255,255,255,0.45)", mb: "12px" }} />
+            <Typography
+              sx={{
+                display: { xs: "none", md: "block" },
+                fontFamily: "var(--font-mulish), sans-serif",
+                fontSize: "13px",
+                lineHeight: 1.35,
+                color: white,
+                maxWidth: "290px",
+                mb: "8px",
+                mx: "auto",
+                textAlign: "center",
+              }}
+            >
+              {t("description1")}
+            </Typography>
+            <Typography
+              sx={{
+                display: { xs: "none", md: "block" },
+                fontFamily: "var(--font-mulish), sans-serif",
+                fontSize: "13px",
+                lineHeight: 1.35,
+                color: white,
+                maxWidth: "290px",
+                mx: "auto",
+                textAlign: "center",
+              }}
+            >
+              {t("description2")}
+            </Typography>
+          </Box>
+
+          <Box>
+            <FooterColumn
+              title={t("footerAboutUs")}
+              links={[
+                { label: t("footerWhoAreWe"), href: marketingAbsolute("/about-us") },
+                { label: t("footerManifesto"), disabled: true },
+                { label: t("footerSupportUs"), href: "mailto:contact@giveety.org" },
+              ]}
+            />
+            <Box sx={{ display: { xs: "none", md: "flex" }, gap: "12px", mt: "18px", justifyContent: "center" }}>
+              <MuiLink
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.instagram.com/giveety.app"
+                sx={{ color: `${white} !important`, display: "inline-flex" }}
+              >
+                <InstagramIcon sx={{ fontSize: "28px" }} />
+              </MuiLink>
+              <MuiLink
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.linkedin.com/showcase/eternitee-org"
+                sx={{ color: `${white} !important`, display: "inline-flex" }}
+              >
+                <LinkedInIcon sx={{ fontSize: "28px" }} />
+              </MuiLink>
+            </Box>
+          </Box>
+
+          <FooterColumn
+            title={t("headerDiscover")}
+            links={[
+              { label: t("discoverServicesItem"), href: marketingAbsolute("/giveety-services") },
+              { label: t("footerPricingAndTerms"), href: marketingAbsolute("/pricing") },
+              { label: t("footerCompetencyFramework"), href: marketingWithLocale(locale, "/giveety/glossary") },
+              { label: t("footerFaqFull"), href: marketingAbsolute("/faq") },
+            ]}
+          />
+
+          <Box sx={{ textAlign: { xs: "center", md: "left" } }}>
+            <Box
+              sx={{
+                minHeight: { xs: "30px", md: "44px" },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: { xs: "center", md: "flex-start" },
+                mb: { xs: "4px", md: "10px" },
+              }}
+            >
+              <Typography
+                sx={{
+                  fontFamily: "var(--font-mulish), sans-serif",
+                  fontSize: "16px",
+                  lineHeight: 1.2,
+                  fontWeight: 600,
+                  color: `${white} !important`,
+                }}
+              >
+                {t("footerStayInTouch")}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                borderTop: { xs: "1px solid #FFFFFF", md: "1px solid rgba(255,255,255,0.45)" },
+                width: { xs: "200px", md: "auto" },
+                mx: { xs: "auto", md: 0 },
+                mb: { xs: "6px", md: "12px" },
               }}
             />
-          </Box>,
-          <Fragment>
-            <Typography sx={textStyles}>
-              {t("externalPages.description1")}
+            <FooterIconLink icon={<SendOutlinedIcon sx={{ fontSize: "22px" }} />} label={t("footerNewsletter")} disabled alignLeft />
+            <FooterIconLink
+              icon={<GroupsOutlined sx={{ fontSize: "22px" }} />}
+              label={t("footerGiveetyForMyOrganization")}
+              href={marketingAbsolute("/contact")}
+              alignLeft
+            />
+            <FooterIconLink
+              icon={<ConstructionIcon sx={{ fontSize: "22px" }} />}
+              label={t("contactSupport")}
+              href={marketingAbsolute("/support")}
+              alignLeft
+            />
+            <FooterIconLink
+              icon={<EmailOutlinedIcon sx={{ fontSize: "22px" }} />}
+              label={t("contactSendEmail")}
+              href="mailto:contact@giveety.org"
+              alignLeft
+            />
+          </Box>
+        </Box>
+
+        <Box sx={{ order: { xs: 3, md: 2 }, mb: { xs: 3, md: 0 } }}>
+          <Box sx={{ borderTop: { xs: "none", md: "1px solid rgba(255,255,255,0.45)" }, mt: { xs: 0, md: 3 }, pt: "14px" }} />
+
+          <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", justifyContent: "center", px: "12px", gap: "10px" }}>
+            <FooterBottomLink label={t("cguTitle")} mobileLabel={t("footerConditionsMobile")} href={termsHref} />
+          </Box>
+          <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", justifyContent: "center", px: "12px", mt: "6px", gap: "10px" }}>
+            <FooterBottomLink label={t("privacyTitle")} mobileLabel={t("footerDataProtectionMobile")} href={privacyHref} />
+          </Box>
+          <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", justifyContent: "center", px: "12px", mt: "6px" }}>
+            <FooterBottomLink label={t("footerOrgTerms")} mobileLabel={t("footerOrgTerms")} href={marketingAbsolute("/organization-terms")} />
+          </Box>
+          <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", justifyContent: "center", px: "12px", mt: "6px" }}>
+            <FooterBottomLink label={t("footerLegalMentions")} mobileLabel={t("footerLegalMentions")} href={marketingAbsolute("/legal-notice")} />
+          </Box>
+          <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", justifyContent: "center", px: "12px", mt: "10px" }}>
+            <Typography sx={{ fontFamily: "var(--font-mulish), sans-serif", fontSize: "13px", lineHeight: 1.2, color: white }}>
+              © {new Date().getFullYear()} {t("copyrightBrand")}
             </Typography>
-            <Typography sx={textStyles}>
-              {t("externalPages.description2")}
-            </Typography>
-          </Fragment>,
-          true,
-        )}
+          </Box>
 
-        {renderColumn(
-          capitalize(t("externalPages.aboutUs")),
-          renderLinkList(aboutUsLinks),
-        )}
-
-        {renderColumn(
-          capitalize(t("externalPages.ourServices")),
-          renderLinkList(servicesLinks),
-        )}
-
-        {renderColumn(
-          capitalize(t("externalPages.stayInTouch")),
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: { xs: 1, sm: 1.5 },
-                justifyContent: "center",
-              }}
-            >
-              <Link
-                href="#"
-                sx={{
-                  ...linkStyles,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: { xs: 0.5, sm: 1 },
-                }}
-              >
-                <Email sx={{ fontSize: { xs: "16px", sm: "20px" } }} />
-                {t("externalPages.contactByEmail")}
-              </Link>
-              <Link
-                href="#"
-                sx={{
-                  ...linkStyles,
-                  display: "flex",
-                  alignItems: "center",
-                  gap: { xs: 0.5, sm: 1 },
-                }}
-              >
-                <Send sx={{ fontSize: { xs: "16px", sm: "20px" } }} />
-                {t("externalPages.newsletter")}
-              </Link>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                gap: { xs: 1, sm: 1.5 },
-                marginTop: { xs: 0.5, sm: 1 },
-                justifyContent: "center",
-              }}
-            >
-              {socialLinks.map((social, index) => (
-                <Link
-                  key={index}
-                  href={social.href}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    backgroundColor: "transparent",
-                    color: theme.palette.background.default,
-                    textDecoration: "none",
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      backgroundColor: "transparent",
-                      color: theme.palette.secondary.main,
-                      transform: "scale(1.1)",
-                    },
-                    "& svg": {
-                      fontSize: { xs: "24px", sm: "30px" },
-                    },
-                  }}
-                >
-                  {social.icon}
-                </Link>
-              ))}
-            </Box>
-          </>,
-        )}
-      </Box>
-
-      <Divider
-        sx={{
-          backgroundColor: theme.palette.background.default,
-          marginY: { xs: 2, sm: 3 },
-        }}
-      />
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: { xs: 1, sm: 2 },
-          alignItems: "center",
-          justifyContent: { xs: "center", md: "center" },
-        }}
-      >
-        {legalLinks.map((link, index) => (
           <Box
-            key={index}
             sx={{
-              display: "flex",
+              display: { xs: "none", md: "flex", lg: "grid" },
+              flexDirection: { md: "column" },
               alignItems: "center",
-              gap: { xs: 1, sm: 2 },
+              rowGap: { md: "8px", lg: 0 },
+              gridTemplateColumns: { lg: "1fr auto 1fr" },
+              color: white,
+              width: "100%",
+              minHeight: "24px",
             }}
           >
-            <Link href={link.href} sx={linkStyles}>
-              {link.label}
-            </Link>
-            {index < legalLinks.length - 1 && (
-              <Box
-                sx={{
-                  width: { xs: "3px", sm: "4px" },
-                  height: { xs: "3px", sm: "4px" },
-                  borderRadius: "50%",
-                  backgroundColor: theme.palette.background.default,
-                }}
-              />
-            )}
+            <Typography sx={{ fontFamily: "var(--font-mulish), sans-serif", fontSize: "13px", lineHeight: 1.2, justifySelf: { lg: "start" }, color: white }}>
+              © {new Date().getFullYear()} {t("copyrightBrand")}
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+                alignItems: "center",
+                justifyContent: "center",
+                minWidth: 0,
+              }}
+            >
+              <FooterBottomLink label={t("cguTitle")} mobileLabel={t("footerConditionsMobile")} href={termsHref} />
+              <FooterDot />
+              <FooterBottomLink label={t("privacyTitle")} mobileLabel={t("footerDataProtectionMobile")} href={privacyHref} />
+              <FooterDot />
+              <FooterBottomLink label={t("footerOrgTerms")} mobileLabel={t("footerOrgTerms")} href={marketingAbsolute("/organization-terms")} />
+              <FooterDot />
+              <FooterBottomLink label={t("footerLegalMentions")} mobileLabel={t("footerLegalMentions")} href={marketingAbsolute("/legal-notice")} />
+            </Box>
           </Box>
-        ))}
+        </Box>
       </Box>
     </Box>
   );

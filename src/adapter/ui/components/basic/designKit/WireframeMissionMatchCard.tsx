@@ -5,6 +5,7 @@ import {
   Box,
   Chip,
   IconButton,
+  Snackbar,
   Stack,
   Typography,
   useTheme,
@@ -35,14 +36,25 @@ export default function WireframeMissionMatchCard() {
   const [stack, setStack] = useState(DECK);
   const [lastAction, setLastAction] = useState<"like" | "skip" | null>(null);
   const [exiting, setExiting] = useState<"like" | "skip" | null>(null);
+  const [snack, setSnack] = useState<string | null>(null);
 
   const top = stack[0];
 
   const swipe = useCallback((dir: "like" | "skip") => {
     setExiting(dir);
     window.setTimeout(() => {
-      setStack((prev) => prev.slice(1));
-      setLastAction(dir);
+      setStack((prev) => {
+        const current = prev[0];
+        if (current) {
+          setLastAction(dir);
+          setSnack(
+            dir === "like"
+              ? `"${current.title}" ajoutée à tes envies ❤ (démo)`
+              : `"${current.title}" passée → suivante (démo)`,
+          );
+        }
+        return prev.slice(1);
+      });
       setExiting(null);
     }, 280);
   }, []);
@@ -81,7 +93,10 @@ export default function WireframeMissionMatchCard() {
           >
             <Typography sx={{ fontWeight: 700 }}>Plus de missions à explorer 🎉</Typography>
             <IconButton
-              onClick={reset}
+              onClick={() => {
+                reset();
+                setSnack("Deck rechargé avec de nouvelles suggestions (démo)");
+              }}
               sx={{ bgcolor: dk.surfaceAccent, color: dk.surfaceStrong }}
               aria-label="Recharger"
             >
@@ -217,6 +232,13 @@ export default function WireframeMissionMatchCard() {
           {lastAction === "like" ? "Mission ajoutée à tes envies ❤" : "Mission passée"}
         </Typography>
       ) : null}
+      <Snackbar
+        open={Boolean(snack)}
+        autoHideDuration={2400}
+        onClose={() => setSnack(null)}
+        message={snack}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Box>
   );
 }

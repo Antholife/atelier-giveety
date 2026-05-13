@@ -12,12 +12,15 @@ import {
   Chip,
   IconButton,
   InputBase,
+  Snackbar,
   Stack,
   Typography,
   useTheme,
+  type SxProps,
+  type Theme,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, type ReactNode } from "react";
 import { designKitPalette } from "./designKitPalette";
 
 type Activity = {
@@ -80,11 +83,31 @@ const CATEGORY_TINTS: Record<Activity["category"], "primaryLight" | "tertiaryLig
   Environnement: "surfaceMuted",
 };
 
-export default function WireframeSearchPanel() {
+type WireframeSearchPanelProps = {
+  /** Rendu entre la barre de recherche et les résultats (ex. filtres + carte). */
+  belowSearch?: ReactNode;
+  /** Bloc inséré entre `belowSearch` et la liste (ex. section « Pour toi »). */
+  betweenSearchAndResults?: ReactNode;
+  /** Ancre de scroll pour la liste (`#id`). */
+  resultsSectionId?: string;
+  /** Titre ou intro au-dessus de la liste (ex. « Toutes les activités »). */
+  resultsHeader?: ReactNode;
+  /** Styles du conteneur de la liste / message vide. */
+  resultsSectionSx?: SxProps<Theme>;
+};
+
+export default function WireframeSearchPanel({
+  belowSearch,
+  betweenSearchAndResults,
+  resultsSectionId,
+  resultsHeader,
+  resultsSectionSx,
+}: WireframeSearchPanelProps) {
   const theme = useTheme();
   const dk = useMemo(() => designKitPalette(theme), [theme]);
   const [query, setQuery] = useState("");
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set(["a3"]));
+  const [snack, setSnack] = useState<string | null>(null);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -145,33 +168,59 @@ export default function WireframeSearchPanel() {
         ) : null}
       </Box>
 
-      {results.length === 0 ? (
-        <Box
-          sx={{
-            p: 3,
-            textAlign: "center",
-            borderRadius: 3,
-            bgcolor: alpha(dk.surfaceAccent, 0.4),
-            border: `1px dashed ${alpha(dk.border, 0.4)}`,
-          }}
-        >
-          <Typography sx={{ fontWeight: 700, color: "primary.main" }}>
-            Aucune mission trouvée pour « {query} »
-          </Typography>
-          <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            Essaie un autre mot-clé ou élargis ta zone.
-          </Typography>
-        </Box>
-      ) : (
-        <Stack spacing={1.25}>
-          {results.map((a) => {
+      {belowSearch ? <Box sx={{ mb: 2 }}>{belowSearch}</Box> : null}
+
+      {betweenSearchAndResults ? <Box sx={{ mb: 2 }}>{betweenSearchAndResults}</Box> : null}
+
+      <Box
+        id={resultsSectionId}
+        sx={
+          [
+            resultsSectionId ? { scrollMarginTop: 88 } : {},
+            ...(resultsSectionSx ? [resultsSectionSx] : []),
+          ] as SxProps<Theme>
+        }
+      >
+        {resultsHeader ? <Box sx={{ mb: 1.5 }}>{resultsHeader}</Box> : null}
+
+        {results.length === 0 ? (
+          <Box
+            sx={{
+              p: 3,
+              textAlign: "center",
+              borderRadius: 3,
+              bgcolor: alpha(dk.surfaceAccent, 0.4),
+              border: `1px dashed ${alpha(dk.border, 0.4)}`,
+            }}
+          >
+            <Typography sx={{ fontWeight: 700, color: "primary.main" }}>
+              Aucune mission trouvée pour « {query} »
+            </Typography>
+            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+              Essaie un autre mot-clé ou élargis ta zone.
+            </Typography>
+          </Box>
+        ) : (
+          <Stack spacing={1.25}>
+            {results.map((a) => {
             const tint = dk[CATEGORY_TINTS[a.category]];
             const isBookmarked = bookmarks.has(a.id);
             return (
               <Box
                 key={a.id}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key !== "Enter" && e.key !== " ") return;
+                  e.preventDefault();
+                  setSnack(`Aperçu « ${a.title} » · ${a.city} (démo)`);
+                }}
+                onClick={() => setSnack(`Aperçu « ${a.title} » · ${a.city} (démo)`)}
                 sx={{
                   display: "flex",
+                  width: "100%",
+                  cursor: "pointer",
+                  textAlign: "left",
                   alignItems: "center",
                   gap: 2,
                   p: 1.5,
@@ -183,6 +232,10 @@ export default function WireframeSearchPanel() {
                     transform: "translateX(2px)",
                     borderColor: alpha(dk.surfaceStrong, 0.3),
                     boxShadow: `0 4px 14px ${alpha(dk.surfaceStrong, 0.08)}`,
+                  },
+                  "&:focus-visible": {
+                    outline: `2px solid ${dk.tertiary}`,
+                    outlineOffset: 2,
                   },
                 }}
               >
@@ -224,7 +277,16 @@ export default function WireframeSearchPanel() {
                 </Box>
                 <IconButton
                   size="small"
-                  onClick={() => toggleBookmark(a.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const removing = bookmarks.has(a.id);
+                    toggleBookmark(a.id);
+                    setSnack(
+                      removing
+                        ? `"${a.title}" retirée des favoris (démo)`
+                        : `"${a.title}" en favori ⭐ (démo)`,
+                    );
+                  }}
                   aria-label="Sauvegarder"
                   sx={{
                     color: isBookmarked ? dk.tertiary : alpha(dk.textMuted, 0.6),
@@ -237,7 +299,16 @@ export default function WireframeSearchPanel() {
             );
           })}
         </Stack>
-      )}
+        )}
+      </Box>
+
+      <Snackbar
+        open={Boolean(snack)}
+        autoHideDuration={2600}
+        onClose={() => setSnack(null)}
+        message={snack}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Box>
   );
 }

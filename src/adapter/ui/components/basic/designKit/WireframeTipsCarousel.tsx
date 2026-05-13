@@ -1,9 +1,10 @@
 "use client";
 
-import { Pause, PlayArrow } from "@mui/icons-material";
+import { Close, Pause, PlayArrow } from "@mui/icons-material";
 import { Box, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import DismissRetentionDialog, { type DismissRetention } from "./DismissRetentionDialog";
 import { designKitPalette } from "./designKitPalette";
 
 const TIPS = [
@@ -16,14 +17,14 @@ const TIPS = [
   {
     id: "2",
     emoji: "🤝",
-    title: "Rends visible ton engagement",
-    body: "Ajoute un manager pour faire valider tes compétences en un clic.",
+    title: "Préviens si ça bouge",
+    body: "Un imprévu ? Dis-le vite à la structure après ton inscription : ils réorganisent plus facilement qu’avec des absences tardives.",
   },
   {
     id: "3",
     emoji: "🎯",
-    title: "Choisis tes thèmes préférés",
-    body: "Tu recevras des suggestions de missions taillées pour toi.",
+    title: "Rayon réaliste",
+    body: "Choisis ta zone et tes créneaux dans les filtres : les missions proposées colleront à ce que tu peux vraiment tenir.",
   },
   {
     id: "4",
@@ -33,13 +34,31 @@ const TIPS = [
   },
 ];
 
-const ROTATION_MS = 4000;
+const ROTATION_MS = 8000;
 
-export default function WireframeTipsCarousel() {
+const TRANSITION_DURATION_S = 1;
+
+export type WireframeTipsCarouselProps = {
+  /** Confirmer la fermeture via modale : temporaire (réouvrable) ou définitif (ex. localStorage côté parent). */
+  onDismissChoice?: (retention: DismissRetention) => void;
+  /** À côté de la checklist (dashboard) : la carte prend toute la hauteur disponible · le dégradé s'étire avec un minimum. */
+  fillColumnHeight?: boolean;
+};
+
+/** Hauteur du bandeau dégradé (hors mode colonne flexible). */
+const GRADIENT_H = 132;
+/** En colonne jumelée : hauteur du slider réduite ; un spacer sous les points remplit pour garder la hauteur de carte alignée avec la checklist. */
+const GRADIENT_H_PAIRED_MD = 128;
+
+export default function WireframeTipsCarousel({
+  onDismissChoice,
+  fillColumnHeight = false,
+}: WireframeTipsCarouselProps) {
   const theme = useTheme();
   const dk = useMemo(() => designKitPalette(theme), [theme]);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(true);
+  const [dismissDialogOpen, setDismissDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!playing) return undefined;
@@ -51,6 +70,13 @@ export default function WireframeTipsCarousel() {
 
   const togglePlay = useCallback(() => setPlaying((v) => !v), []);
 
+  const toolbarBtnSx = {
+    zIndex: 1,
+    bgcolor: alpha(dk.surfaceStrong, 0.22),
+    color: dk.surfaceStrong,
+    "&:hover": { bgcolor: alpha(dk.surfaceStrong, 0.34) },
+  };
+
   return (
     <Box
       sx={{
@@ -58,33 +84,67 @@ export default function WireframeTipsCarousel() {
         bgcolor: dk.white,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
-        p: { xs: 2, sm: 2.5 },
+        p:
+          fillColumnHeight
+            ? { xs: 1.25, sm: 1.5, md: 1.75 }
+            : { xs: 1.75, sm: 2 },
+        width: "100%",
+        ...(fillColumnHeight
+          ? {
+              flex: { xs: "none", md: 1 },
+              minHeight: { md: 0 },
+              height: { md: "100%" },
+              display: "flex",
+              flexDirection: "column",
+            }
+          : {}),
       }}
     >
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.5 }}>
-        <Typography sx={{ fontWeight: 800, color: "primary.main" }}>
-          💡 Conseils pour bien démarrer
-        </Typography>
-        <IconButton size="small" onClick={togglePlay} aria-label={playing ? "Pause" : "Play"}>
-          {playing ? <Pause fontSize="small" /> : <PlayArrow fontSize="small" />}
-        </IconButton>
-      </Stack>
-
       <Box
         sx={{
           position: "relative",
-          height: 160,
           borderRadius: 2.5,
           overflow: "hidden",
           background: `linear-gradient(135deg, ${alpha(dk.tertiaryLight, 0.5)} 0%, ${alpha(dk.primaryLight, 0.4)} 100%)`,
+          ...(fillColumnHeight
+            ? {
+                flex: { xs: "none", md: "0 0 auto" },
+                minHeight: { xs: GRADIENT_H, md: GRADIENT_H_PAIRED_MD },
+                height: { xs: GRADIENT_H, md: GRADIENT_H_PAIRED_MD },
+              }
+            : { height: GRADIENT_H }),
         }}
       >
+        <Stack
+          direction="row"
+          spacing={0.5}
+          sx={{ position: "absolute", top: fillColumnHeight ? { xs: 6, md: 8 } : 8, right: fillColumnHeight ? { xs: 6, md: 8 } : 8, zIndex: 1 }}
+        >
+          <IconButton
+            size="small"
+            onClick={togglePlay}
+            aria-label={playing ? "Pause" : "Play"}
+            sx={toolbarBtnSx}
+          >
+            {playing ? <Pause fontSize="small" /> : <PlayArrow fontSize="small" />}
+          </IconButton>
+          {onDismissChoice ? (
+            <IconButton
+              size="small"
+              onClick={() => setDismissDialogOpen(true)}
+              aria-label="Masquer uniquement les astuces"
+              sx={toolbarBtnSx}
+            >
+              <Close sx={{ fontSize: 18 }} />
+            </IconButton>
+          ) : null}
+        </Stack>
         <Box
           sx={{
             position: "absolute",
             inset: 0,
             transform: `translateY(-${index * 100}%)`,
-            transition: "transform 0.6s cubic-bezier(.4,1.4,.4,1)",
+            transition: `transform ${TRANSITION_DURATION_S}s cubic-bezier(.4,1.4,.4,1)`,
           }}
         >
           {TIPS.map((t) => (
@@ -92,18 +152,45 @@ export default function WireframeTipsCarousel() {
               key={t.id}
               sx={{
                 height: "100%",
-                p: 3,
+                p: fillColumnHeight ? { xs: 1.75, sm: 2, md: 2.25 } : 2.25,
                 display: "flex",
                 alignItems: "center",
-                gap: 2,
+                gap: fillColumnHeight ? { xs: 1.25, md: 1.5 } : 1.5,
               }}
             >
-              <Box sx={{ fontSize: 56, flexShrink: 0 }}>{t.emoji}</Box>
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 800, color: "primary.main", lineHeight: 1.1 }}>
+              <Box
+                sx={{
+                  fontSize: fillColumnHeight ? { xs: 40, md: 48 } : 48,
+                  lineHeight: 1,
+                  flexShrink: 0,
+                }}
+              >
+                {t.emoji}
+              </Box>
+              <Box sx={{ minWidth: 0 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 800,
+                    color: "primary.main",
+                    lineHeight: 1.12,
+                    ...(fillColumnHeight
+                      ? { fontSize: { xs: "0.95rem", md: "1.05rem" } }
+                      : { fontSize: "1.05rem" }),
+                  }}
+                >
                   {t.title}
                 </Typography>
-                <Typography sx={{ color: "primary.main", fontWeight: 500, mt: 0.5, opacity: 0.85 }}>
+                <Typography
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 500,
+                    mt: fillColumnHeight ? { xs: 0.35, md: 0.45 } : 0.45,
+                    opacity: 0.88,
+                    lineHeight: fillColumnHeight ? 1.38 : 1.38,
+                    fontSize: fillColumnHeight ? { xs: "0.78rem", md: "0.82rem" } : "0.82rem",
+                  }}
+                >
                   {t.body}
                 </Typography>
               </Box>
@@ -130,22 +217,49 @@ export default function WireframeTipsCarousel() {
         ) : null}
       </Box>
 
-      <Stack direction="row" justifyContent="center" spacing={0.75} sx={{ mt: 1.5 }}>
+      <Stack
+        direction="row"
+        justifyContent="center"
+        spacing={0.75}
+        sx={{
+          mt: fillColumnHeight ? { xs: 1, md: 1.15 } : 1.15,
+          flexShrink: 0,
+        }}
+      >
         {TIPS.map((t, i) => (
           <Box
             key={t.id}
             onClick={() => setIndex(i)}
             sx={{
-              width: i === index ? 24 : 6,
-              height: 6,
+              width: i === index ? (fillColumnHeight ? { xs: 20, md: 22 } : 22) : 5,
+              height: fillColumnHeight ? { xs: 5, md: 5 } : 5,
               borderRadius: 9999,
               bgcolor: i === index ? dk.surfaceStrong : alpha(dk.border, 0.3),
               cursor: "pointer",
-              transition: "width 0.3s ease, background 0.2s ease",
+              transition: "width 0.3s ease, background 0.2s ease, height 0.2s ease",
             }}
           />
         ))}
       </Stack>
+
+      {fillColumnHeight ? <Box sx={{ flex: 1, minHeight: 0 }} /> : null}
+
+      {onDismissChoice ? (
+        <DismissRetentionDialog
+          open={dismissDialogOpen}
+          onClose={() => setDismissDialogOpen(false)}
+          scopeLabel="les astuces"
+          blockTitle="Astuces"
+          onChooseTemporary={() => {
+            setDismissDialogOpen(false);
+            onDismissChoice("temporary");
+          }}
+          onChoosePermanent={() => {
+            setDismissDialogOpen(false);
+            onDismissChoice("permanent");
+          }}
+        />
+      ) : null}
     </Box>
   );
 }

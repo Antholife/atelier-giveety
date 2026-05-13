@@ -10,11 +10,11 @@
  * Main content padding top values
  *
  * Compensates for the fixed AppBar height so content is not hidden behind
- * the header. Values match the header height defined in `Header.tsx`.
+ * the header. Matches Keycloak docker Giveety Navbar (mobile 50px, desktop 90px).
  */
 export const MAIN_CONTENT_PADDING_TOP = {
-  /** Mobile view: AppBar height = 70px */
-  MOBILE: "70px",
+  /** Mobile view: même hauteur que le header Keycloak Giveety docker (50px) */
+  MOBILE: "50px",
   /** Desktop view: AppBar height = 90px */
   DESKTOP: "90px",
 } as const;

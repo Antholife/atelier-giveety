@@ -13,9 +13,9 @@ import { alpha, darken } from "@mui/material/styles";
 import { useCallback, useMemo, useState } from "react";
 import { designKitPalette } from "./designKitPalette";
 
-type Member = { id: string; initials: string; name: string };
+export type AvatarStackMember = { id: string; initials: string; name: string };
 
-const MEMBERS: Member[] = [
+const MEMBERS: AvatarStackMember[] = [
   { id: "1", initials: "EM", name: "Élise" },
   { id: "2", initials: "TL", name: "Théo" },
   { id: "3", initials: "NA", name: "Nora" },
@@ -29,10 +29,78 @@ const MEMBERS: Member[] = [
 
 const MAX_VISIBLE = 5;
 
+/** Ligne d’avatars chevauchés sans carte (fiche mission, lignes équipe…) */
+export function WireframeAvatarStackInline({
+  members,
+  maxVisible = MAX_VISIBLE,
+  size = 36,
+}: {
+  members: AvatarStackMember[];
+  maxVisible?: number;
+  size?: number;
+}) {
+  const theme = useTheme();
+  const dk = useMemo(() => designKitPalette(theme), [theme]);
+  const visible = members.slice(0, maxVisible);
+  const overflow = Math.max(0, members.length - maxVisible);
+  const overlap = Math.round(size * -0.3);
+  const borderW = Math.max(2, Math.round(size * 0.08));
+
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      {visible.map((m, i) => (
+        <Tooltip key={m.id} title={m.name} arrow>
+          <Box
+            sx={{
+              width: size,
+              height: size,
+              borderRadius: "50%",
+              bgcolor: dk.surfaceStrong,
+              color: dk.white,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 800,
+              fontSize: Math.max(10, Math.round(size * 0.36)),
+              border: `${borderW}px solid ${dk.white}`,
+              marginLeft: i === 0 ? 0 : overlap,
+              zIndex: visible.length - i,
+            }}
+          >
+            {m.initials}
+          </Box>
+        </Tooltip>
+      ))}
+      {overflow > 0 ? (
+        <Tooltip title={members.slice(maxVisible).map((m) => m.name).join(", ")} arrow>
+          <Box
+            sx={{
+              width: size,
+              height: size,
+              borderRadius: "50%",
+              bgcolor: alpha(dk.border, 0.2),
+              color: dk.text,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 800,
+              fontSize: 11,
+              border: `${borderW}px solid ${dk.white}`,
+              marginLeft: overlap,
+            }}
+          >
+            +{overflow}
+          </Box>
+        </Tooltip>
+      ) : null}
+    </Box>
+  );
+}
+
 export default function WireframeAvatarStack() {
   const theme = useTheme();
   const dk = useMemo(() => designKitPalette(theme), [theme]);
-  const [members, setMembers] = useState<Member[]>(MEMBERS);
+  const [members, setMembers] = useState<AvatarStackMember[]>(MEMBERS);
   const [joined, setJoined] = useState(false);
 
   const visible = members.slice(0, MAX_VISIBLE);

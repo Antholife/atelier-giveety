@@ -4,7 +4,7 @@ import { Download, Refresh } from "@mui/icons-material";
 import { Box, Button, Stack, TextField, Typography, useTheme } from "@mui/material";
 import { alpha, darken } from "@mui/material/styles";
 import { useCallback, useMemo, useState } from "react";
-import { designKitPalette } from "./designKitPalette";
+import { designKitPalette, type DesignKitPalette } from "./designKitPalette";
 
 const SIZE = 25;
 
@@ -53,15 +53,86 @@ function buildMatrix(input: string): boolean[][] {
   return m;
 }
 
-export default function WireframeQRCode() {
+const DEFAULT_ENCODE_URL = "https://giveety.app/u/elise-marchand";
+
+/** Petit rendu QR (même générateur que la carte démo complète). */
+export function WireframeProfileQRThumb({
+  encodedUrl,
+  displaySizePx = 144,
+  logoLetter = "G",
+}: {
+  encodedUrl: string;
+  /** Taille SVG affichée (px). */
+  displaySizePx?: number;
+  logoLetter?: string;
+}) {
   const theme = useTheme();
   const dk = useMemo(() => designKitPalette(theme), [theme]);
-  const [url, setUrl] = useState("https://giveety.app/u/elise-marchand");
+  const matrix = useMemo(() => buildMatrix(encodedUrl), [encodedUrl]);
+  const logoSz = Math.max(26, Math.round(displaySizePx * 0.22));
+  const fontPx = Math.max(11, Math.round(logoSz * 0.45));
 
-  const matrix = useMemo(() => buildMatrix(url), [url]);
+  return (
+    <Box
+      sx={{
+        position: "relative",
+        p: 1.25,
+        borderRadius: 2.5,
+        bgcolor: dk.white,
+        border: `1px solid ${alpha(dk.border, 0.2)}`,
+        boxShadow: `0 8px 20px ${alpha(dk.surfaceStrong, 0.1)}`,
+        display: "inline-flex",
+      }}
+      role="img"
+      aria-label="QR code profil public (démo)"
+    >
+      <svg
+        viewBox={`0 0 ${SIZE} ${SIZE}`}
+        width={displaySizePx}
+        height={displaySizePx}
+        shapeRendering="crispEdges"
+      >
+        <rect width={SIZE} height={SIZE} fill={dk.white} />
+        {matrix.flatMap((row, y) =>
+          row.map((on, x) => (on ? <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={dk.text} /> : null)),
+        )}
+      </svg>
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: logoSz,
+          height: logoSz,
+          borderRadius: 1.5,
+          bgcolor: dk.surfaceStrong,
+          color: dk.white,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: 900,
+          fontSize: fontPx,
+          border: `3px solid ${dk.white}`,
+        }}
+      >
+        {logoLetter}
+      </Box>
+    </Box>
+  );
+}
 
-  const reset = useCallback(() => setUrl("https://giveety.app/u/elise-marchand"), []);
-
+function FullQRCodeCard({
+  dk,
+  url,
+  setUrl,
+  reset,
+}: {
+  dk: DesignKitPalette;
+  url: string;
+  setUrl: (v: string) => void;
+  reset: () => void;
+}) {
   return (
     <Box
       sx={{
@@ -80,48 +151,7 @@ export default function WireframeQRCode() {
       </Typography>
 
       <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5} alignItems="center">
-        <Box
-          sx={{
-            position: "relative",
-            p: 1.5,
-            borderRadius: 3,
-            bgcolor: dk.white,
-            border: `1px solid ${alpha(dk.border, 0.2)}`,
-            boxShadow: `0 8px 18px ${alpha(dk.surfaceStrong, 0.12)}`,
-          }}
-        >
-          <svg viewBox={`0 0 ${SIZE} ${SIZE}`} width={150} height={150} shapeRendering="crispEdges">
-            <rect width={SIZE} height={SIZE} fill={dk.white} />
-            {matrix.flatMap((row, y) =>
-              row.map((on, x) =>
-                on ? (
-                  <rect key={`${x}-${y}`} x={x} y={y} width={1} height={1} fill={dk.text} />
-                ) : null,
-              ),
-            )}
-          </svg>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 36,
-              height: 36,
-              borderRadius: 1.5,
-              bgcolor: dk.surfaceStrong,
-              color: dk.white,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 900,
-              fontSize: 14,
-              border: `3px solid ${dk.white}`,
-            }}
-          >
-            G
-          </Box>
-        </Box>
+        <WireframeProfileQRThumb encodedUrl={url} displaySizePx={150} />
 
         <Box sx={{ flex: 1, width: "100%" }}>
           <TextField
@@ -166,4 +196,14 @@ export default function WireframeQRCode() {
       </Stack>
     </Box>
   );
+}
+
+export default function WireframeQRCode() {
+  const theme = useTheme();
+  const dk = useMemo(() => designKitPalette(theme), [theme]);
+  const [url, setUrl] = useState(DEFAULT_ENCODE_URL);
+
+  const reset = useCallback(() => setUrl(DEFAULT_ENCODE_URL), []);
+
+  return <FullQRCodeCard dk={dk} url={url} setUrl={setUrl} reset={reset} />;
 }
