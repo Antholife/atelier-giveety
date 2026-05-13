@@ -1,0 +1,30 @@
+# Nx
+.nx/cache
+.nx/workspace-data
+
+# Dependencies
+node_modules
+
+# Environment variables
+.env*
+!.env.example
+
+# OS
+.DS_Store
+*.pem
+
+# Logs
+*.log
+
+# IDE
+.history
+.vscode/
+.idea/
+.next
+.yarn/install-state.gz
+/yarn.lock
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+apps/front-end/.yarn/install-state.gz

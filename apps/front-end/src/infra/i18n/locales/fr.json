@@ -1,0 +1,33 @@
+{
+  "pages": {
+    "atelier-ui-ux": {
+      "title": "Atelier UI UX",
+      "description": "Atelier de design des composants UI/UX Giveety V2"
+    }
+  },
+  "header": {},
+  "externalPages": {
+    "organizations": "organisations",
+    "activities": "activités",
+    "memberSpace": "mon espace membre",
+    "privacyPolicy": "Politique de traitement des données",
+    "description1": "Giveety est une initiative innovante made with ❤️ in Switzerland et sans but lucratif.",
+    "description2": "La plateforme est développée selon les principes des logiciels Open Source.",
+    "aboutUs": "À propos de nous",
+    "manifest": "Le Manifeste Giveety",
+    "whoAreWe": "Qui sommes-nous ?",
+    "joinUs": "Nous rejoindre",
+    "supportUs": "Nous soutenir",
+    "ourServices": "Nos services",
+    "forVolunteers": "Pour les bénévoles",
+    "forOrganizations": "Pour les organisations",
+    "pricing": "Tarifs & conditions",
+    "resources": "Ressources",
+    "stayInTouch": "Restons en contact",
+    "contactByEmail": "Nous contacter par e-mail",
+    "newsletter": "S'inscrire à la newsletter",
+    "faq": "FAQ",
+    "termsOfUse": "Conditions générales d'utilisation",
+    "legalNotices": "Mentions légales"
+  }
+}

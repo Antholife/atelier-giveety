@@ -1,0 +1,94 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "staging",
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "libs"
+  },
+  "targetDefaults": {
+    "build": {
+      "cache": true,
+      "inputs": ["production", "^production"],
+      "outputs": ["{projectRoot}/.next", "{projectRoot}/out"]
+    },
+    "lint": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/eslint.config.mjs"
+      ]
+    },
+    "test": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/tsconfig.base.json",
+        "{projectRoot}/vitest.config.ts"
+      ]
+    }
+  },
+  "release": {
+    "projects": ["front-end"],
+    "projectsRelationship": "independent",
+    "releaseTagPattern": "v{version}-{projectName}-BETA",
+    "changelog": {
+      "projectChangelogs": {
+        "renderOptions": {
+          "authors": true,
+          "applyUsernameToAuthors": true,
+          "commitReferences": true,
+          "versionTitleDate": true
+        }
+      },
+      "git": {
+        "commit": false,
+        "tag": false
+      }
+    },
+    "conventionalCommits": {
+      "types": {
+        "feat": {
+          "semverBump": "none",
+          "changelog": { "title": "Features" }
+        },
+        "fix": {
+          "semverBump": "none",
+          "changelog": { "title": "Bug Fixes" }
+        },
+        "docs": {
+          "semverBump": "none",
+          "changelog": { "title": "Documentation" }
+        },
+        "chore": {
+          "semverBump": "none",
+          "changelog": { "title": "Maintenance" }
+        },
+        "refactor": {
+          "semverBump": "patch",
+          "changelog": { "title": "Refactoring" }
+        },
+        "perf": {
+          "semverBump": "patch",
+          "changelog": { "title": "Performance" }
+        },
+        "style": {
+          "semverBump": "none",
+          "changelog": { "title": "Style" }
+        },
+        "test": {
+          "semverBump": "none",
+          "changelog": { "title": "Tests" }
+        },
+        "ci": {
+          "semverBump": "none",
+          "changelog": { "title": "CI/CD" }
+        }
+      }
+    },
+    "version": {
+      "currentVersionResolver": "git-tag"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+# for dev environment
+
+name: front-end
+
+services:
+  front-end:
+    container_name: front-end
+    image: front-end
+    build:
+      context: .
+      dockerfile: apps/front-end/Dockerfile
+      target: development
+    restart: always
+    ports:
+      - "${NEXT_PORT:-3000}:3000"
+    volumes:
+      - ./apps/front-end:/srv/app

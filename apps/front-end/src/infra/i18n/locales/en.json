@@ -1,0 +1,33 @@
+{
+  "pages": {
+    "atelier-ui-ux": {
+      "title": "UI UX Lab",
+      "description": "Design lab for Giveety V2 UI/UX components"
+    }
+  },
+  "header": {},
+  "externalPages": {
+    "organizations": "organizations",
+    "activities": "activities",
+    "memberSpace": "member space",
+    "privacyPolicy": "Privacy policy",
+    "description1": "Giveety is an innovative initiative made with ❤️ in Switzerland and non-profit.",
+    "description2": "The platform is developed according to Open Source software principles.",
+    "aboutUs": "About us",
+    "manifest": "The Giveety Manifesto",
+    "whoAreWe": "Who are we?",
+    "joinUs": "Join us",
+    "supportUs": "Support us",
+    "ourServices": "Our services",
+    "forVolunteers": "For volunteers",
+    "forOrganizations": "For organizations",
+    "pricing": "Pricing & conditions",
+    "resources": "Resources",
+    "stayInTouch": "Let's stay in touch",
+    "contactByEmail": "Contact us by email",
+    "newsletter": "Subscribe to the newsletter",
+    "faq": "FAQ",
+    "termsOfUse": "Terms of use",
+    "legalNotices": "Legal notices"
+  }
+}
