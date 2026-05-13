@@ -140,7 +140,7 @@ export default function WireframeSearchPanel({
           px: 2,
           py: 1,
           borderRadius: 9999,
-          bgcolor: dk.white,
+          bgcolor: dk.canvas,
           border: `1px solid ${alpha(dk.border, 0.25)}`,
           boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
           mb: 2,
@@ -225,7 +225,7 @@ export default function WireframeSearchPanel({
                   gap: 2,
                   p: 1.5,
                   borderRadius: 2.5,
-                  bgcolor: dk.white,
+                  bgcolor: dk.canvas,
                   border: `1px solid ${alpha(dk.border, 0.15)}`,
                   transition: "all 0.15s ease",
                   "&:hover": {

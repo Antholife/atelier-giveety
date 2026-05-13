@@ -113,7 +113,7 @@ export default function WireframeCommandPalette() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: 3,
@@ -172,7 +172,7 @@ export default function WireframeCommandPalette() {
             left: "50%",
             transform: "translateX(-50%)",
             width: { xs: "92%", sm: 540 },
-            bgcolor: dk.white,
+            bgcolor: dk.canvas,
             borderRadius: 3,
             outline: "none",
             boxShadow: `0 24px 64px ${alpha("#000", 0.3)}`,

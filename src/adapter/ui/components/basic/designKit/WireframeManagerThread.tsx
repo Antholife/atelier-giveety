@@ -118,7 +118,7 @@ export default function WireframeManagerThread() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 8px 28px ${alpha(dk.surfaceStrong, 0.08)}`,
         overflow: "hidden",
@@ -161,7 +161,7 @@ export default function WireframeManagerThread() {
               bottom: -4,
               fontSize: 16,
               color: dk.tertiary,
-              bgcolor: dk.white,
+              bgcolor: dk.canvas,
               borderRadius: "50%",
             }}
           />
@@ -239,7 +239,7 @@ export default function WireframeManagerThread() {
                     borderRadius: 2.5,
                     borderTopLeftRadius: mine ? 20 : 4,
                     borderTopRightRadius: mine ? 4 : 20,
-                    bgcolor: mine ? dk.surfaceStrong : dk.white,
+                    bgcolor: mine ? dk.surfaceStrong : dk.canvas,
                     color: mine ? dk.white : dk.text,
                     border: mine ? "none" : `1px solid ${alpha(dk.border, 0.15)}`,
                     boxShadow: `0 2px 8px ${alpha(dk.surfaceStrong, 0.06)}`,
@@ -300,7 +300,7 @@ export default function WireframeManagerThread() {
                 px: 1.5,
                 py: 1,
                 borderRadius: 2.5,
-                bgcolor: dk.white,
+                bgcolor: dk.canvas,
                 border: `1px solid ${alpha(dk.border, 0.15)}`,
                 display: "inline-flex",
                 gap: 0.5,
@@ -342,7 +342,7 @@ export default function WireframeManagerThread() {
           display: "flex",
           gap: 1,
           alignItems: "center",
-          bgcolor: dk.white,
+          bgcolor: dk.canvas,
         }}
       >
         <InputBase

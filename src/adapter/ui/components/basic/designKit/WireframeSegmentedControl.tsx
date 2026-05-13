@@ -23,7 +23,7 @@ export default function WireframeSegmentedControl() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -57,7 +57,7 @@ export default function WireframeSegmentedControl() {
             width: `calc(${segWidth}% - 8px / ${OPTIONS.length})`,
             transform: `translateX(calc(${activeIndex} * (100% + 8px / ${OPTIONS.length})))`,
             borderRadius: 9999,
-            bgcolor: dk.white,
+            bgcolor: dk.canvas,
             boxShadow: `0 2px 8px ${alpha(dk.surfaceStrong, 0.18)}`,
             transition: "transform 0.32s cubic-bezier(.5,1.4,.4,1)",
           }}

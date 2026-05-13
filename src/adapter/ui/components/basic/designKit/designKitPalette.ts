@@ -17,7 +17,12 @@ export function designKitPalette(theme: Theme) {
     border: palette.border.main,
     text: palette.text.primary,
     textMuted: palette.text.secondary,
-    white: palette.background.default,
+    /** Fond canvas (clair / sombre) — préférer à un blanc littéral pour les surfaces pleines. */
+    canvas: palette.background.default,
+    /** Blanc pur : texte sur primaire, verre, reflets. */
+    white: palette.common.white,
+    /** Alias sémantique pour effets « liquid glass » (même valeur que `white`). */
+    frost: palette.common.white,
     mint: palette.pdf?.defaultSkillColor ?? "#A8E6CF",
   };
 }

@@ -90,7 +90,7 @@ export default function WireframeDateRangePicker() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -111,7 +111,7 @@ export default function WireframeDateRangePicker() {
           py: 1.25,
           borderRadius: 2,
           border: `1px solid ${open ? dk.tertiary : alpha(dk.border, 0.25)}`,
-          bgcolor: open ? alpha(dk.tertiaryLight, 0.2) : dk.white,
+          bgcolor: open ? alpha(dk.tertiaryLight, 0.2) : dk.canvas,
           cursor: "pointer",
           transition: "all 0.15s ease",
         }}
@@ -137,7 +137,7 @@ export default function WireframeDateRangePicker() {
               width: 320,
               p: 2,
               borderRadius: 2.5,
-              bgcolor: dk.white,
+              bgcolor: dk.canvas,
               border: `1px solid ${alpha(dk.border, 0.18)}`,
               boxShadow: `0 12px 32px ${alpha(dk.surfaceStrong, 0.16)}`,
             }}

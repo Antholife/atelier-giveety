@@ -27,7 +27,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { alpha, darken } from "@mui/material/styles";
+import { alpha, darken, type SxProps, type Theme } from "@mui/material/styles";
 import {
   useCallback,
   useEffect,
@@ -71,6 +71,114 @@ function readDismissForeverLs(key: string): boolean {
 /** URL publique fictive pour QR + partage (dashboard démo). */
 const DASHBOARD_PROFILE_SHARE_URL = "https://giveety.app/u/anthony-renevey";
 
+/** Styles partagés « liquid glass » (vitres, profondeur, palette Giveety). */
+function dashGlassShellSx(dk: DesignKitPalette, primaryMain: string): SxProps<Theme> {
+  return {
+    position: "relative",
+    isolation: "isolate",
+    overflow: "hidden",
+    background: `linear-gradient(
+      165deg,
+      ${alpha(dk.pageBg, 0.7)} 0%,
+      ${alpha(dk.primaryLight, 0.4)} 38%,
+      ${alpha(dk.tertiaryLight, 0.3)} 72%,
+      ${alpha(dk.pageBg, 0.66)} 100%
+    )`,
+    backdropFilter: "blur(22px) saturate(175%)",
+    WebkitBackdropFilter: "blur(22px) saturate(175%)",
+    border: `1px solid ${alpha(dk.white, 0.52)}`,
+    boxShadow: `
+      0 0 0 1px ${alpha(dk.white, 0.16)} inset,
+      0 20px 50px ${alpha(primaryMain, 0.1)}
+    `,
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      borderRadius: "inherit",
+      pointerEvents: "none",
+      zIndex: 0,
+      background: `linear-gradient(195deg, ${alpha(dk.white, 0.22)} 0%, transparent 52%)`,
+      opacity: 0.6,
+    },
+    "& > *": { position: "relative", zIndex: 1 },
+  };
+}
+
+function dashGlassPanelSx(dk: DesignKitPalette, primaryMain: string): SxProps<Theme> {
+  return {
+    position: "relative",
+    overflow: "hidden",
+    bgcolor: alpha(dk.white, 0.36),
+    backdropFilter: "blur(18px) saturate(170%)",
+    WebkitBackdropFilter: "blur(18px) saturate(170%)",
+    border: `1px solid ${alpha(dk.white, 0.6)}`,
+    boxShadow: `
+      0 0 0 1px ${alpha(dk.white, 0.18)} inset,
+      0 12px 36px ${alpha(primaryMain, 0.08)}
+    `,
+  };
+}
+
+/** Vitre « frosted » neutre (léger flou + blanc laiteux, ombre grise — sans teinte primaire). */
+function dashGlassFrostedPanelSx(dk: DesignKitPalette): SxProps<Theme> {
+  return {
+    position: "relative",
+    isolation: "isolate",
+    overflow: "hidden",
+    bgcolor: alpha(dk.white, 0.52),
+    backdropFilter: "blur(24px) saturate(200%)",
+    WebkitBackdropFilter: "blur(24px) saturate(200%)",
+    border: `1px solid ${alpha(dk.white, 0.72)}`,
+    boxShadow: `
+      0 0 0 1px ${alpha(dk.white, 0.42)} inset,
+      0 2px 8px ${alpha("#000", 0.04)},
+      0 14px 44px ${alpha("#000", 0.09)}
+    `,
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      borderRadius: "inherit",
+      pointerEvents: "none",
+      zIndex: 0,
+      background: `linear-gradient(200deg, ${alpha(dk.white, 0.58)} 0%, transparent 52%)`,
+      opacity: 0.5,
+    },
+    "& > *": { position: "relative", zIndex: 1 },
+  };
+}
+
+function dashGlassFrostedDashedButtonSx(dk: DesignKitPalette): SxProps<Theme> {
+  return {
+    ...dashGlassFrostedPanelSx(dk),
+    border: `1px dashed ${alpha(dk.border, 0.4)}`,
+    bgcolor: alpha(dk.white, 0.38),
+  };
+}
+
+function dashGlassModalBodySx(dk: DesignKitPalette): SxProps<Theme> {
+  return {
+    bgcolor: alpha(dk.white, 0.45),
+    backdropFilter: "blur(28px) saturate(180%)",
+    WebkitBackdropFilter: "blur(28px) saturate(180%)",
+    border: `1px solid ${alpha(dk.white, 0.62)}`,
+    boxShadow: `
+      0 0 0 1px ${alpha(dk.white, 0.28)} inset,
+      0 10px 40px ${alpha("#000", 0.07)},
+      0 28px 64px ${alpha("#000", 0.16)}
+    `,
+  };
+}
+
+function dashGlassDashedButtonSx(dk: DesignKitPalette, primaryMain: string): SxProps<Theme> {
+  return {
+    ...dashGlassPanelSx(dk, primaryMain),
+    border: `1px dashed ${alpha(dk.tertiary, 0.42)}`,
+    bgcolor: alpha(dk.white, 0.26),
+  };
+}
+
 function GreetingRow({ actions }: { actions?: ReactNode }) {
   return (
     <Stack
@@ -103,125 +211,176 @@ function GreetingRow({ actions }: { actions?: ReactNode }) {
 }
 
 function NextContributionCard({ dk }: { dk: DesignKitPalette }) {
+  const theme = useTheme();
+  const pm = theme.palette.primary.main;
+  const tertiary = dk.tertiary;
+
   return (
     <Box
       sx={{
         position: "relative",
-        borderRadius: 2.5,
+        borderRadius: 3,
         overflow: "hidden",
-        background: `linear-gradient(135deg, ${dk.surfaceStrong} 0%, ${alpha(
-          dk.surfaceStrong,
-          0.85,
-        )} 100%)`,
-        color: dk.white,
-        p: { xs: 1.5, sm: 2.25 },
+        ...dashGlassPanelSx(dk, pm),
+        borderLeft: `4px solid ${tertiary}`,
+        p: { xs: 2, sm: 2.5 },
       }}
     >
       <Box
         aria-hidden
         sx={{
           position: "absolute",
-          top: -40,
-          right: -40,
+          top: -36,
+          right: -24,
           width: 180,
           height: 180,
           borderRadius: "50%",
-          bgcolor: alpha(dk.tertiary, 0.25),
-          filter: "blur(0px)",
+          bgcolor: alpha(tertiary, 0.14),
+          filter: "blur(36px)",
+          pointerEvents: "none",
         }}
       />
+      <Box
+        aria-hidden
+        sx={{
+          position: "absolute",
+          bottom: -48,
+          left: -40,
+          width: 200,
+          height: 200,
+          borderRadius: "50%",
+          bgcolor: alpha(pm, 0.09),
+          filter: "blur(32px)",
+          pointerEvents: "none",
+        }}
+      />
+
       <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={1.5}
-        alignItems={{ xs: "flex-start", md: "center" }}
+        direction={{ xs: "column", lg: "row" }}
+        spacing={2}
+        alignItems={{ xs: "stretch", lg: "center" }}
         justifyContent="space-between"
-        sx={{ position: "relative" }}
+        sx={{ position: "relative", zIndex: 1 }}
       >
-        <Box>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.5 }}>
+        <Box sx={{ minWidth: 0, flex: 1 }}>
+          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap sx={{ mb: 1 }}>
             <Box
+              component="span"
               sx={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 0.5,
-                px: 0.9,
-                py: 0.25,
+                px: 1.1,
+                py: 0.35,
                 borderRadius: 999,
-                bgcolor: dk.tertiary,
-                color: dk.white,
+                bgcolor: alpha(tertiary, 0.12),
+                color: tertiary,
+                border: `1px solid ${alpha(tertiary, 0.38)}`,
                 fontSize: 10.5,
                 fontWeight: 800,
+                letterSpacing: "0.07em",
                 textTransform: "uppercase",
-                letterSpacing: 0.4,
               }}
             >
               ✓ Validée
             </Box>
-            <Typography variant="caption" sx={{ opacity: 0.85, fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ color: "text.secondary", fontWeight: 700, fontSize: 12 }}>
               Dans 4 jours · sam. 9 mai
             </Typography>
           </Stack>
-          <Typography sx={{ fontWeight: 800, fontSize: 16, lineHeight: 1.2 }}>
+          <Typography
+            sx={{
+              fontWeight: 800,
+              fontSize: { xs: "1.08rem", sm: "1.2rem" },
+              lineHeight: 1.28,
+              color: "primary.dark",
+              letterSpacing: "-0.02em",
+            }}
+          >
             Maraude AEP · Distribution petits-déjeuners
           </Typography>
           <Typography
             variant="caption"
-            sx={{ opacity: 0.8, fontWeight: 600, fontSize: 11.5, mt: 0.25, display: "block" }}
+            sx={{
+              color: "text.secondary",
+              fontWeight: 600,
+              fontSize: 12,
+              mt: 0.5,
+              display: "block",
+            }}
           >
-            Giveety_TestA · 📍 Paris 11e · 09h00 — 14h00
+            Giveety_TestA · Paris 11e · 09h00 — 14h00
           </Typography>
-          <Stack direction="row" spacing={0.5} sx={{ mt: 1 }}>
+          <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 1.25 }}>
             {Array.from({ length: 5 }).map((_, i) => (
               <Box
                 key={i}
                 sx={{
-                  width: 20,
-                  height: 20,
+                  width: 22,
+                  height: 22,
                   borderRadius: "50%",
                   bgcolor: ["#E63946", "#2A9D8F", "#F4A261", "#5A189A", "#0077B6"][i],
-                  border: `2px solid ${dk.surfaceStrong}`,
-                  ml: i === 0 ? 0 : -0.75,
+                  border: `2px solid ${alpha(dk.white, 0.98)}`,
+                  boxShadow: `0 0 0 1px ${alpha(pm, 0.2)}`,
+                  ml: i === 0 ? 0 : -0.65,
                 }}
               />
             ))}
-            <Typography
-              variant="caption"
-              sx={{ ml: 1, fontWeight: 700, alignSelf: "center", opacity: 0.9 }}
-            >
+            <Typography variant="caption" sx={{ ml: 1.2, fontWeight: 700, color: "text.secondary" }}>
               5 bénévoles confirmés
             </Typography>
           </Stack>
         </Box>
-        <Stack direction="row" spacing={1} sx={{ flexShrink: 0 }}>
+
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={1}
+          sx={{
+            flexShrink: 0,
+            alignSelf: { xs: "stretch", lg: "center" },
+            width: { xs: "100%", lg: "auto" },
+          }}
+        >
           <Button
+            variant="contained"
+            disableElevation
             size="small"
+            endIcon={<ArrowForward sx={{ fontSize: 16 }} />}
             sx={{
               textTransform: "none",
               fontWeight: 800,
-              fontSize: 12,
-              color: dk.surfaceStrong,
-              bgcolor: dk.white,
-              px: 1.5,
-              py: 0.75,
-              borderRadius: 1.5,
-              "&:hover": { bgcolor: alpha(dk.white, 0.92) },
+              fontSize: 12.5,
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              bgcolor: pm,
+              boxShadow: `0 8px 22px ${alpha(pm, 0.28)}`,
+              "&:hover": {
+                bgcolor: darken(pm, 0.06),
+                boxShadow: `0 10px 26px ${alpha(pm, 0.34)}`,
+              },
             }}
-            endIcon={<ArrowForward sx={{ fontSize: "14px !important" }} />}
           >
             Voir l'activité
           </Button>
           <Button
+            variant="outlined"
             size="small"
             sx={{
               textTransform: "none",
               fontWeight: 700,
-              fontSize: 12,
-              color: dk.white,
-              border: `1px solid ${alpha(dk.white, 0.35)}`,
-              px: 1.5,
-              py: 0.75,
-              borderRadius: 1.5,
-              "&:hover": { bgcolor: alpha(dk.white, 0.1) },
+              fontSize: 12.5,
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              borderColor: alpha(pm, 0.38),
+              color: "primary.main",
+              bgcolor: alpha(dk.white, 0.5),
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              "&:hover": {
+                borderColor: pm,
+                bgcolor: alpha(dk.white, 0.72),
+              },
             }}
           >
             Préparer
@@ -232,16 +391,55 @@ function NextContributionCard({ dk }: { dk: DesignKitPalette }) {
   );
 }
 
-function SectionTitle({ title, hint }: { title: string; hint?: string }) {
+function SectionTitle({
+  title,
+  hint,
+  hintVariant = "inline",
+}: {
+  title: string;
+  hint?: string;
+  /** `pill` : hint dans une pastille (meilleure hiérarchie visuelle). */
+  hintVariant?: "inline" | "pill";
+}) {
+  const theme = useTheme();
   return (
-    <Stack direction="row" alignItems="baseline" spacing={1}>
-      <Typography sx={{ fontWeight: 800, fontSize: 16, color: "primary.main" }}>
+    <Stack direction="row" alignItems="center" spacing={1.25} flexWrap="wrap" useFlexGap>
+      <Typography
+        sx={{
+          fontWeight: 800,
+          fontSize: 17,
+          color: "primary.main",
+          letterSpacing: "-0.02em",
+          lineHeight: 1.2,
+        }}
+      >
         {title}
       </Typography>
       {hint ? (
-        <Typography variant="caption" sx={{ color: "text.secondary", fontWeight: 600 }}>
-          {hint}
-        </Typography>
+        hintVariant === "pill" ? (
+          <Box
+            component="span"
+            sx={{
+              typography: "caption",
+              fontWeight: 700,
+              fontSize: 11,
+              letterSpacing: "0.05em",
+              textTransform: "uppercase",
+              px: 1.25,
+              py: 0.45,
+              borderRadius: 999,
+              color: "tertiary.main",
+              bgcolor: alpha(theme.palette.tertiary.main, 0.1),
+              border: `1px solid ${alpha(theme.palette.tertiary.main, 0.35)}`,
+            }}
+          >
+            {hint}
+          </Box>
+        ) : (
+          <Typography variant="caption" sx={{ color: "text.secondary", fontWeight: 600, fontSize: 12 }}>
+            {hint}
+          </Typography>
+        )
       ) : null}
     </Stack>
   );
@@ -262,14 +460,14 @@ function CollapsibleSection({
   children: ReactNode;
   dk: DesignKitPalette;
 }) {
+  const theme = useTheme();
   const [open, setOpen] = useState(defaultOpen);
   return (
     <Box
       sx={{
         borderRadius: 2.5,
-        bgcolor: dk.white,
-        border: `1px solid ${alpha(dk.border, 0.15)}`,
         overflow: "hidden",
+        ...dashGlassPanelSx(dk, theme.palette.primary.main),
       }}
     >
       <Stack
@@ -290,9 +488,11 @@ function CollapsibleSection({
           py: 1.25,
           cursor: "pointer",
           userSelect: "none",
-          bgcolor: open ? alpha(dk.surfaceMuted, 0.18) : "transparent",
-          transition: "background 0.15s ease",
-          "&:hover": { bgcolor: alpha(dk.surfaceMuted, 0.25) },
+          bgcolor: open ? alpha(dk.white, 0.22) : "transparent",
+          backdropFilter: open ? "blur(10px) saturate(150%)" : "none",
+          WebkitBackdropFilter: open ? "blur(10px) saturate(150%)" : "none",
+          transition: "background 0.15s ease, backdrop-filter 0.15s ease",
+          "&:hover": { bgcolor: alpha(dk.white, 0.28) },
           outline: "none",
           "&:focus-visible": {
             boxShadow: `inset 0 0 0 2px ${alpha(dk.tertiary, 0.5)}`,
@@ -337,7 +537,18 @@ function CollapsibleSection({
         ) : null}
       </Stack>
       <Collapse in={open} timeout="auto" unmountOnExit={false}>
-        <Box sx={{ p: { xs: 1.25, sm: 1.75 }, pt: { xs: 1, sm: 1.25 } }}>{children}</Box>
+        <Box
+          sx={{
+            p: { xs: 1.25, sm: 1.75 },
+            pt: { xs: 1, sm: 1.25 },
+            bgcolor: alpha(dk.white, 0.14),
+            backdropFilter: "blur(12px) saturate(150%)",
+            WebkitBackdropFilter: "blur(12px) saturate(150%)",
+            borderTop: `1px solid ${alpha(dk.white, 0.22)}`,
+          }}
+        >
+          {children}
+        </Box>
       </Collapse>
     </Box>
   );
@@ -431,7 +642,7 @@ function DashboardTour({
   let tipLeft = rect.left + rect.width / 2 - TIP_W / 2;
   tipLeft = Math.max(12, Math.min(tipLeft, rect.rootW - TIP_W - 12));
 
-  const backdropBg = alpha(dk.surfaceStrong, 0.55);
+  const backdropBg = alpha("#0a0a0a", 0.52);
   const isLast = stepIdx === steps.length - 1;
 
   return (
@@ -513,7 +724,7 @@ function DashboardTour({
         }}
       />
 
-      {/* Tooltip card */}
+      {/* Tooltip card — presque opaque (lisibilité), léger flou conservé */}
       <Box
         sx={{
           position: "absolute",
@@ -521,17 +732,28 @@ function DashboardTour({
           left: tipLeft,
           width: TIP_W,
           maxWidth: "calc(100% - 24px)",
-          bgcolor: dk.white,
           borderRadius: 2.5,
           p: 1.75,
-          boxShadow: `0 12px 40px ${alpha(dk.surfaceStrong, 0.35)}`,
           pointerEvents: "auto",
           transition: "all 0.25s ease",
-          border: `1px solid ${alpha(dk.border, 0.2)}`,
+          background: `linear-gradient(
+            185deg,
+            ${alpha(dk.white, 0.995)} 0%,
+            ${alpha(dk.white, 0.97)} 62%,
+            ${alpha("#F5F5F7", 0.99)} 100%
+          )`,
+          backdropFilter: "blur(14px) saturate(165%)",
+          WebkitBackdropFilter: "blur(14px) saturate(165%)",
+          border: `1px solid ${alpha(dk.white, 0.95)}`,
+          boxShadow: `
+            0 0 0 1px ${alpha(dk.white, 0.65)} inset,
+            0 18px 48px ${alpha("#000", 0.1)},
+            0 4px 14px ${alpha("#000", 0.07)}
+          `,
         }}
       >
         <Stack direction="row" alignItems="center" spacing={0.75}>
-          <AutoAwesome sx={{ fontSize: 16, color: dk.tertiary }} />
+          <AutoAwesome sx={{ fontSize: 16, color: "text.secondary" }} />
           <Typography
             sx={{
               fontSize: 10.5,
@@ -548,7 +770,7 @@ function DashboardTour({
           sx={{
             fontSize: 15,
             fontWeight: 800,
-            color: "primary.main",
+            color: "text.primary",
             mt: 0.5,
             lineHeight: 1.25,
           }}
@@ -704,7 +926,7 @@ function BadgeUnlockedModal({
   tick: number;
 }) {
   return (
-    <Modal open={open} onClose={onClose} closeAfterTransition>
+    <Modal open={open} onClose={onClose} closeAfterTransition slotProps={{ backdrop: { sx: { backdropFilter: "blur(18px) saturate(140%)", bgcolor: alpha("#000", 0.42) } } }}>
       <Box
         sx={{
           position: "absolute",
@@ -712,16 +934,15 @@ function BadgeUnlockedModal({
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: { xs: "90%", sm: 440 },
-          bgcolor: dk.white,
           borderRadius: 3,
           overflow: "hidden",
           outline: "none",
-          boxShadow: `0 24px 60px ${alpha("#000", 0.3)}`,
           animation: "wf-pop 0.35s ease",
           "@keyframes wf-pop": {
             "0%": { transform: "translate(-50%, -50%) scale(0.8)", opacity: 0 },
             "100%": { transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
           },
+          ...dashGlassModalBodySx(dk),
         }}
         key={tick}
       >
@@ -732,7 +953,11 @@ function BadgeUnlockedModal({
             pt: 5,
             pb: 4,
             textAlign: "center",
-            background: `linear-gradient(160deg, ${alpha(dk.primaryLight, 0.6)} 0%, ${dk.white} 100%)`,
+            background: `linear-gradient(160deg, ${alpha(dk.primaryLight, 0.42)} 0%, ${alpha(dk.white, 0.38)} 100%)`,
+            backdropFilter: "blur(18px) saturate(175%)",
+            WebkitBackdropFilter: "blur(18px) saturate(175%)",
+            borderBottom: `1px solid ${alpha(dk.white, 0.35)}`,
+            boxShadow: `inset 0 1px 0 ${alpha(dk.white, 0.35)}`,
           }}
         >
           <Confetti dk={dk} seed={tick} />
@@ -852,6 +1077,8 @@ function EditableWidgetCard({
   onDragEnd: (e: React.DragEvent<HTMLDivElement>) => void;
   onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
 }) {
+  const theme = useTheme();
+  const pm = theme.palette.primary.main;
   return (
     <Box
       draggable={editing}
@@ -956,6 +1183,9 @@ function EditableWidgetCard({
           pointerEvents: editing ? "none" : "auto",
           opacity: editing ? 0.85 : 1,
           transition: "opacity 0.15s ease",
+          borderRadius: 2.5,
+          p: { xs: 1, sm: 1.15 },
+          ...dashGlassPanelSx(dk, pm),
         }}
       >
         {def.render()}
@@ -1145,15 +1375,8 @@ function MessagerieWidget() {
   const dk = useMemo(() => designKitPalette(theme), [theme]);
   const [openConv, setOpenConv] = useState<Conversation | null>(null);
   return (
-    <Box
-      sx={{
-        borderRadius: 2.5,
-        bgcolor: dk.white,
-        border: `1px solid ${alpha(dk.border, 0.15)}`,
-        p: 1,
-      }}
-    >
-      <Stack spacing={0.25}>
+    <>
+      <Stack spacing={0.25} sx={{ width: "100%" }}>
         {CONVERSATIONS.map((c) => (
           <ConversationRow
             key={c.id}
@@ -1164,7 +1387,7 @@ function MessagerieWidget() {
         ))}
       </Stack>
 
-      <Modal open={openConv !== null} onClose={() => setOpenConv(null)} closeAfterTransition>
+      <Modal open={openConv !== null} onClose={() => setOpenConv(null)} closeAfterTransition slotProps={{ backdrop: { sx: { backdropFilter: "blur(16px) saturate(140%)", bgcolor: alpha("#000", 0.38) } } }}>
         <Box
           sx={{
             position: "absolute",
@@ -1175,16 +1398,15 @@ function MessagerieWidget() {
             maxHeight: "90vh",
             display: "flex",
             flexDirection: "column",
-            bgcolor: dk.white,
             borderRadius: 3,
             overflow: "hidden",
             outline: "none",
-            boxShadow: `0 24px 60px ${alpha("#000", 0.3)}`,
             animation: "wf-chat-pop 0.25s ease",
             "@keyframes wf-chat-pop": {
               "0%": { transform: "translate(-50%, -50%) scale(0.96)", opacity: 0 },
               "100%": { transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
             },
+            ...dashGlassModalBodySx(dk),
           }}
         >
           {openConv ? (
@@ -1196,8 +1418,11 @@ function MessagerieWidget() {
                 sx={{
                   px: 2,
                   py: 1.5,
-                  borderBottom: `1px solid ${alpha(dk.border, 0.18)}`,
-                  bgcolor: alpha(dk.pageBg, 0.5),
+                  borderBottom: `1px solid ${alpha(dk.border, 0.14)}`,
+                  bgcolor: alpha(dk.white, 0.32),
+                  backdropFilter: "blur(18px) saturate(175%)",
+                  WebkitBackdropFilter: "blur(18px) saturate(175%)",
+                  boxShadow: `inset 0 1px 0 ${alpha(dk.white, 0.45)}`,
                 }}
               >
                 <Box
@@ -1248,7 +1473,7 @@ function MessagerieWidget() {
           ) : null}
         </Box>
       </Modal>
-    </Box>
+    </>
   );
 }
 
@@ -1273,12 +1498,15 @@ function AddWidgetTile({
         minHeight: 130,
         borderRadius: 2.5,
         border: `2px dashed ${alpha(dk.tertiary, disabled ? 0.25 : 0.55)}`,
-        bgcolor: alpha(dk.tertiary, disabled ? 0.02 : 0.05),
+        bgcolor: alpha(dk.tertiary, disabled ? 0.04 : 0.09),
+        backdropFilter: "blur(14px) saturate(150%)",
+        WebkitBackdropFilter: "blur(14px) saturate(150%)",
         color: dk.tertiary,
         opacity: disabled ? 0.5 : 1,
         transition: "all 0.15s ease",
+        boxShadow: `0 0 0 1px ${alpha(dk.white, 0.15)} inset`,
         "&:hover": {
-          bgcolor: alpha(dk.tertiary, disabled ? 0.02 : 0.1),
+          bgcolor: alpha(dk.tertiary, disabled ? 0.02 : 0.14),
           borderColor: disabled ? alpha(dk.tertiary, 0.25) : dk.tertiary,
         },
       }}
@@ -1684,78 +1912,89 @@ export default function WireframeDashboardV2({
           hideEmbeddedContribNav
             ? {
                 borderRadius: 3,
-                bgcolor: dk.pageBg,
-                border: `1px solid ${alpha(dk.border, 0.15)}`,
                 p: { xs: 1.25, sm: 2 },
                 display: "flex",
                 flexDirection: "column",
                 gap: 2,
+                ...dashGlassShellSx(dk, theme.palette.primary.main),
               }
             : {
                 borderTopLeftRadius: 0,
                 borderTopRightRadius: 0,
                 borderBottomLeftRadius: 12,
                 borderBottomRightRadius: 12,
-                bgcolor: dk.pageBg,
-                border: `1px solid ${alpha(dk.border, 0.15)}`,
                 borderTop: "none",
                 p: { xs: 1.25, sm: 2 },
                 display: "flex",
                 flexDirection: "column",
                 gap: 2,
+                ...dashGlassShellSx(dk, theme.palette.primary.main),
               }
         }
       >
       <Box ref={greetingRef}>
-        <GreetingRow
-          actions={
-            <>
-              <Button
-                size="small"
-                disableElevation
-                onClick={() => setShareProfileOpen(true)}
-                startIcon={<Share sx={{ fontSize: 18 }} />}
-                sx={{
-                  textTransform: "none",
-                  fontWeight: 800,
-                  fontSize: 12.5,
-                  borderRadius: 9999,
-                  px: 2,
-                  py: 0.75,
-                  color: dk.surfaceStrong,
-                  background: `linear-gradient(125deg, ${alpha(dk.tertiaryLight, 0.98)} 0%, ${alpha(dk.primaryLight, 0.78)} 42%, ${alpha(dk.mint, 0.5)} 100%)`,
-                  border: `1px solid ${alpha(dk.tertiary, 0.45)}`,
-                  boxShadow: `0 6px 20px ${alpha(dk.surfaceStrong, 0.1)}`,
-                  "&:hover": {
-                    background: `linear-gradient(125deg, ${dk.tertiaryLight} 0%, ${alpha(dk.primaryLight, 0.92)} 45%, ${alpha(dk.mint, 0.62)} 100%)`,
-                    borderColor: alpha(dk.tertiary, 0.7),
-                  },
-                }}
-              >
-                Partager mon profil
-              </Button>
-              <Button
-                size="small"
-                variant="outlined"
-                startIcon={<AutoAwesome sx={{ fontSize: 16 }} />}
-                onClick={restartTour}
-                sx={{
-                  textTransform: "none",
-                  fontWeight: 700,
-                  fontSize: 12.5,
-                  borderColor: alpha(dk.tertiary, 0.5),
-                  color: dk.tertiary,
-                  "&:hover": {
-                    borderColor: dk.tertiary,
-                    bgcolor: alpha(dk.tertiary, 0.08),
-                  },
-                }}
-              >
-                Refaire la visite
-              </Button>
-            </>
-          }
-        />
+        <Box
+          sx={{
+            borderRadius: 3,
+            p: { xs: 1.5, sm: 2 },
+            ...dashGlassPanelSx(dk, theme.palette.primary.main),
+          }}
+        >
+          <GreetingRow
+            actions={
+              <>
+                <Button
+                  size="small"
+                  disableElevation
+                  onClick={() => setShareProfileOpen(true)}
+                  startIcon={<Share sx={{ fontSize: 18 }} />}
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 800,
+                    fontSize: 12.5,
+                    borderRadius: 9999,
+                    px: 2,
+                    py: 0.75,
+                    color: dk.surfaceStrong,
+                    background: `linear-gradient(125deg, ${alpha(dk.tertiaryLight, 0.92)} 0%, ${alpha(dk.primaryLight, 0.68)} 42%, ${alpha(dk.mint, 0.45)} 100%)`,
+                    backdropFilter: "blur(12px) saturate(160%)",
+                    WebkitBackdropFilter: "blur(12px) saturate(160%)",
+                    border: `1px solid ${alpha(dk.tertiary, 0.5)}`,
+                    boxShadow: `0 0 0 1px ${alpha(dk.white, 0.35)} inset, 0 8px 24px ${alpha(dk.surfaceStrong, 0.12)}`,
+                    "&:hover": {
+                      background: `linear-gradient(125deg, ${alpha(dk.tertiaryLight, 0.98)} 0%, ${alpha(dk.primaryLight, 0.85)} 45%, ${alpha(dk.mint, 0.55)} 100%)`,
+                      borderColor: alpha(dk.tertiary, 0.75),
+                    },
+                  }}
+                >
+                  Partager mon profil
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<AutoAwesome sx={{ fontSize: 16 }} />}
+                  onClick={restartTour}
+                  sx={{
+                    textTransform: "none",
+                    fontWeight: 700,
+                    fontSize: 12.5,
+                    borderColor: alpha(dk.tertiary, 0.45),
+                    color: dk.tertiary,
+                    bgcolor: alpha(dk.white, 0.22),
+                    backdropFilter: "blur(10px)",
+                    WebkitBackdropFilter: "blur(10px)",
+                    "&:hover": {
+                      borderColor: dk.tertiary,
+                      bgcolor: alpha(dk.tertiary, 0.12),
+                    },
+                  }}
+                >
+                  Refaire la visite
+                </Button>
+              </>
+            }
+          />
+        </Box>
       </Box>
 
       {/* Bannières informations profil — carte blanche, titre de section */}
@@ -1763,10 +2002,8 @@ export default function WireframeDashboardV2({
         <Box
           sx={{
             borderRadius: 3,
-            bgcolor: dk.white,
-            border: `1px solid ${alpha(dk.border, 0.18)}`,
-            boxShadow: `0 4px 24px ${alpha(dk.surfaceStrong, 0.06)}`,
             p: { xs: 2, sm: 2.5 },
+            ...dashGlassPanelSx(dk, theme.palette.primary.main),
           }}
         >
           <Stack spacing={2}>
@@ -1860,6 +2097,9 @@ export default function WireframeDashboardV2({
                     display: "flex",
                     flexDirection: "column",
                     minHeight: { md: premiersPasOpen ? 0 : undefined },
+                    borderRadius: 3,
+                    p: { xs: 1, sm: 1.25 },
+                    ...dashGlassFrostedPanelSx(dk),
                   }}
                 >
                   <WireframeTipsCarousel
@@ -1877,6 +2117,9 @@ export default function WireframeDashboardV2({
                     display: "flex",
                     flexDirection: "column",
                     minHeight: { md: tipsOpen ? 0 : undefined },
+                    borderRadius: 3,
+                    p: { xs: 1, sm: 1.25 },
+                    ...dashGlassFrostedPanelSx(dk),
                   }}
                 >
                   <WireframeChecklist pairedLayout onDismissChoice={onPremiersDismissChoice} />
@@ -1889,17 +2132,16 @@ export default function WireframeDashboardV2({
                 sx={{
                   width: "100%",
                   borderRadius: 3,
-                  bgcolor: dk.white,
-                  border: `1px dashed ${alpha(dk.border, 0.4)}`,
                   p: 1.5,
+                  ...dashGlassFrostedDashedButtonSx(dk),
                   color: "text.secondary",
                   fontWeight: 700,
                   fontSize: 13,
                   transition: "all 0.15s ease",
                   "&:hover": {
-                    borderColor: alpha(dk.tertiary, 0.5),
-                    bgcolor: alpha(dk.tertiary, 0.04),
-                    color: dk.tertiary,
+                    borderColor: alpha(dk.border, 0.62),
+                    bgcolor: alpha(dk.white, 0.62),
+                    color: "text.primary",
                   },
                 }}
               >
@@ -1915,17 +2157,16 @@ export default function WireframeDashboardV2({
                 sx={{
                   width: "100%",
                   borderRadius: 3,
-                  bgcolor: dk.white,
-                  border: `1px dashed ${alpha(dk.border, 0.4)}`,
                   p: 1.5,
+                  ...dashGlassFrostedDashedButtonSx(dk),
                   color: "text.secondary",
                   fontWeight: 700,
                   fontSize: 13,
                   transition: "all 0.15s ease",
                   "&:hover": {
-                    borderColor: alpha(dk.tertiary, 0.5),
-                    bgcolor: alpha(dk.tertiary, 0.04),
-                    color: dk.tertiary,
+                    borderColor: alpha(dk.border, 0.62),
+                    bgcolor: alpha(dk.white, 0.62),
+                    color: "text.primary",
                   },
                 }}
               >
@@ -1944,17 +2185,16 @@ export default function WireframeDashboardV2({
                 sx={{
                   width: "100%",
                   borderRadius: 3,
-                  bgcolor: dk.white,
-                  border: `1px dashed ${alpha(dk.border, 0.4)}`,
                   p: 1.5,
+                  ...dashGlassFrostedDashedButtonSx(dk),
                   color: "text.secondary",
                   fontWeight: 700,
                   fontSize: 13,
                   transition: "all 0.15s ease",
                   "&:hover": {
-                    borderColor: alpha(dk.tertiary, 0.5),
-                    bgcolor: alpha(dk.tertiary, 0.04),
-                    color: dk.tertiary,
+                    borderColor: alpha(dk.border, 0.62),
+                    bgcolor: alpha(dk.white, 0.62),
+                    color: "text.primary",
                   },
                 }}
               >
@@ -1970,17 +2210,16 @@ export default function WireframeDashboardV2({
                 sx={{
                   width: "100%",
                   borderRadius: 3,
-                  bgcolor: dk.white,
-                  border: `1px dashed ${alpha(dk.border, 0.4)}`,
                   p: 1.5,
+                  ...dashGlassFrostedDashedButtonSx(dk),
                   color: "text.secondary",
                   fontWeight: 700,
                   fontSize: 13,
                   transition: "all 0.15s ease",
                   "&:hover": {
-                    borderColor: alpha(dk.tertiary, 0.5),
-                    bgcolor: alpha(dk.tertiary, 0.04),
-                    color: dk.tertiary,
+                    borderColor: alpha(dk.border, 0.62),
+                    bgcolor: alpha(dk.white, 0.62),
+                    color: "text.primary",
                   },
                 }}
               >
@@ -1996,7 +2235,7 @@ export default function WireframeDashboardV2({
 
       {/* Next contribution */}
       <Box ref={nextContribRef}>
-        <SectionTitle title="Ma prochaine contribution" hint="le truc le plus proche" />
+        <SectionTitle title="Ma prochaine contribution" hint="Prochaine étape" hintVariant="pill" />
         <Box sx={{ mt: 1 }}>
           <NextContributionCard dk={dk} />
         </Box>
@@ -2201,8 +2440,8 @@ export default function WireframeDashboardV2({
                 borderRadius: 2,
                 minWidth: 280,
                 maxHeight: 360,
-                border: `1px solid ${alpha(dk.border, 0.3)}`,
-                boxShadow: `0 12px 40px ${alpha(dk.surfaceStrong, 0.2)}`,
+                ...dashGlassPanelSx(dk, theme.palette.primary.main),
+                border: `1px solid ${alpha(dk.white, 0.5)}`,
               },
             },
           }}
@@ -2301,7 +2540,7 @@ export default function WireframeDashboardV2({
         onClose={() => setShareProfileOpen(false)}
         aria-labelledby="share-profile-title"
         slotProps={{
-          backdrop: { sx: { backdropFilter: "blur(8px)", bgcolor: alpha("#000", 0.35) } },
+          backdrop: { sx: { backdropFilter: "blur(18px) saturate(140%)", bgcolor: alpha("#000", 0.38) } },
         }}
       >
         <Box
@@ -2315,17 +2554,19 @@ export default function WireframeDashboardV2({
             maxHeight: "calc(100vh - 48px)",
             overflow: "auto",
             borderRadius: 3,
-            bgcolor: dk.white,
             outline: "none",
-            boxShadow: `0 28px 56px ${alpha("#000", 0.2)}`,
-            border: `1px solid ${alpha(dk.border, 0.12)}`,
+            ...dashGlassModalBodySx(dk),
           }}
         >
           <Box
             sx={{
               px: 2.5,
               py: 2.25,
-              background: `linear-gradient(128deg, ${dk.surfaceStrong} 0%, ${alpha(dk.tertiary, 0.55)} 52%, ${alpha(dk.primaryLight, 0.55)} 100%)`,
+              background: `linear-gradient(128deg, ${alpha(dk.surfaceStrong, 0.92)} 0%, ${alpha(dk.tertiary, 0.55)} 52%, ${alpha(dk.primaryLight, 0.48)} 100%)`,
+              backdropFilter: "blur(20px) saturate(170%)",
+              WebkitBackdropFilter: "blur(20px) saturate(170%)",
+              borderBottom: `1px solid ${alpha(dk.white, 0.22)}`,
+              boxShadow: `inset 0 1px 0 ${alpha(dk.white, 0.2)}`,
               borderTopLeftRadius: 12,
               borderTopRightRadius: 12,
             }}
@@ -2350,13 +2591,16 @@ export default function WireframeDashboardV2({
             </Stack>
           </Box>
 
-          <Stack spacing={2.5} sx={{ p: 3, pt: 2.5, alignItems: "center", textAlign: "center" }}>
+            <Stack spacing={2.5} sx={{ p: 3, pt: 2.5, alignItems: "center", textAlign: "center", bgcolor: alpha(dk.white, 0.18), backdropFilter: "blur(8px)" }}>
             <Box
               sx={{
                 p: 2,
                 borderRadius: 3,
-                bgcolor: alpha(dk.surfaceMuted, 0.35),
-                border: `1px dashed ${alpha(dk.border, 0.4)}`,
+                bgcolor: alpha(dk.white, 0.38),
+                backdropFilter: "blur(14px) saturate(160%)",
+                WebkitBackdropFilter: "blur(14px) saturate(160%)",
+                border: `1px solid ${alpha(dk.white, 0.55)}`,
+                boxShadow: `0 0 0 1px ${alpha(dk.white, 0.15)} inset`,
               }}
             >
               <WireframeProfileQRThumb encodedUrl={DASHBOARD_PROFILE_SHARE_URL} displaySizePx={168} />

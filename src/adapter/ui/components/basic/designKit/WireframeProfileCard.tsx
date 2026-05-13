@@ -62,7 +62,7 @@ export default function WireframeProfileCard() {
       sx={{
         borderRadius: 3,
         overflow: "hidden",
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.2)}`,
         boxShadow: `0 8px 28px ${alpha(dk.surfaceStrong, 0.08)}`,
       }}
@@ -118,7 +118,7 @@ export default function WireframeProfileCard() {
               width: 22,
               height: 22,
               borderRadius: "50%",
-              bgcolor: dk.white,
+              bgcolor: dk.canvas,
               border: `2px solid ${dk.white}`,
               display: "flex",
               alignItems: "center",

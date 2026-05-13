@@ -64,7 +64,7 @@ export default function DismissRetentionDialog({
           borderRadius: 3,
           overflow: "hidden",
           boxShadow: `0 22px 56px ${alpha("#000", 0.28)}, 0 0 0 1px ${alpha(dk.white, 0.08)}`,
-          bgcolor: dk.white,
+          bgcolor: dk.canvas,
           animation: "dismiss-ret-pop 0.32s cubic-bezier(.34,1.4,.64,1)",
           "@keyframes dismiss-ret-pop": {
             from: { opacity: 0, transform: "translate(-50%, -48%) scale(0.94)" },
@@ -149,7 +149,7 @@ export default function DismissRetentionDialog({
           sx={{
             px: 2.5,
             py: 2.25,
-            background: `linear-gradient(180deg, ${alpha(dk.primaryLight, 0.38)} 0%, ${dk.white} 70%)`,
+            background: `linear-gradient(180deg, ${alpha(dk.primaryLight, 0.38)} 0%, ${dk.canvas} 70%)`,
           }}
         >
           <Stack spacing={1.5}>
@@ -170,7 +170,7 @@ export default function DismissRetentionDialog({
             px: 2.5,
             pb: 2.25,
             pt: 0.5,
-            bgcolor: dk.white,
+            bgcolor: dk.canvas,
             borderTop: `1px solid ${alpha(dk.border, 0.12)}`,
           }}
         >

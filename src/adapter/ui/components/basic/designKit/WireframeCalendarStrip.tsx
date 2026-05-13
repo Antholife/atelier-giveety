@@ -74,7 +74,7 @@ export default function WireframeCalendarStrip({
     <Box
       sx={{
         borderRadius: embedded ? 2 : 3,
-        bgcolor: embedded ? "transparent" : dk.white,
+        bgcolor: embedded ? "transparent" : dk.canvas,
         border: embedded ? "none" : `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: embedded ? "none" : `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: isComfortable

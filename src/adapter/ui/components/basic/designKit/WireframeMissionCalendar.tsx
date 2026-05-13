@@ -271,7 +271,7 @@ export default function WireframeMissionCalendar({ pageTitle }: WireframeMission
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 1.5, sm: 2.5 },
@@ -332,7 +332,7 @@ export default function WireframeMissionCalendar({ pageTitle }: WireframeMission
                     fontSize: 12,
                     fontWeight: 700,
                     color: active ? dk.surfaceStrong : "text.secondary",
-                    bgcolor: active ? dk.white : "transparent",
+                    bgcolor: active ? dk.canvas : "transparent",
                     boxShadow: active
                       ? `0 1px 3px ${alpha(dk.surfaceStrong, 0.12)}`
                       : "none",
@@ -741,7 +741,7 @@ export default function WireframeMissionCalendar({ pageTitle }: WireframeMission
                       spacing={1}
                       alignItems="center"
                       sx={{
-                        bgcolor: dk.white,
+                        bgcolor: dk.canvas,
                         borderRadius: 1.5,
                         px: 1,
                         py: 0.75,

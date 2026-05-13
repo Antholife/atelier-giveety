@@ -69,7 +69,7 @@ export default function WireframePricingCards() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -104,7 +104,7 @@ export default function WireframePricingCards() {
               left: 4,
               width: "calc(50% - 4px)",
               borderRadius: 9999,
-              bgcolor: dk.white,
+              bgcolor: dk.canvas,
               transform: period === "yearly" ? "translateX(100%)" : "translateX(0%)",
               transition: "transform 0.32s cubic-bezier(.4,1.4,.4,1)",
               boxShadow: `0 2px 8px ${alpha(dk.surfaceStrong, 0.18)}`,
@@ -148,7 +148,7 @@ export default function WireframePricingCards() {
                 position: "relative",
                 p: 2.5,
                 borderRadius: 3,
-                bgcolor: plan.highlight ? dk.surfaceStrong : dk.white,
+                bgcolor: plan.highlight ? dk.surfaceStrong : dk.canvas,
                 color: plan.highlight ? dk.white : "primary.main",
                 border: `1px solid ${plan.highlight ? "transparent" : alpha(dk.border, 0.18)}`,
                 boxShadow: plan.highlight

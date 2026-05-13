@@ -165,7 +165,7 @@ function SkillColumn({
         borderRadius: 2.5,
         border: `1px solid ${alpha(dk.border, 0.2)}`,
         overflow: "hidden",
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         flex: 1,
         minWidth: 0,
       }}
@@ -342,7 +342,7 @@ export default function WireframeMissionDetailPage({ preset }: WireframeMissionD
         <Box
           sx={{
             borderRadius: 3,
-            bgcolor: dk.white,
+            bgcolor: dk.canvas,
             border: `1px solid ${alpha(dk.border, 0.15)}`,
             p: { xs: 2, sm: 3 },
             mb: 0,
@@ -360,7 +360,7 @@ export default function WireframeMissionDetailPage({ preset }: WireframeMissionD
                   width: { xs: 56, sm: 72 },
                   height: { xs: 56, sm: 72 },
                   borderRadius: 2,
-                  bgcolor: dk.white,
+                  bgcolor: dk.canvas,
                   border: `1px solid ${alpha(dk.border, 0.2)}`,
                   display: "flex",
                   alignItems: "center",
@@ -471,7 +471,7 @@ export default function WireframeMissionDetailPage({ preset }: WireframeMissionD
               sx={{
                 mb: 3,
                 borderRadius: 3,
-                bgcolor: dk.white,
+                bgcolor: dk.canvas,
                 border: `1px solid ${alpha(dk.border, 0.15)}`,
                 p: { xs: 2, sm: 2.5 },
               }}
@@ -497,7 +497,7 @@ export default function WireframeMissionDetailPage({ preset }: WireframeMissionD
                 <Box
                   sx={{
                     borderRadius: 3,
-                    bgcolor: dk.white,
+                    bgcolor: dk.canvas,
                     border: `1px solid ${alpha(dk.border, 0.15)}`,
                     boxShadow: `0 8px 28px ${alpha(dk.surfaceStrong, 0.06)}`,
                     overflow: "hidden",
@@ -684,7 +684,7 @@ export default function WireframeMissionDetailPage({ preset }: WireframeMissionD
               <Box
                 sx={{
                   borderRadius: 3,
-                  bgcolor: dk.white,
+                  bgcolor: dk.canvas,
                   border: `1px solid ${alpha(dk.border, 0.15)}`,
                   boxShadow: `0 8px 28px ${alpha(dk.surfaceStrong, 0.06)}`,
                   overflow: "hidden",
@@ -779,7 +779,7 @@ export default function WireframeMissionDetailPage({ preset }: WireframeMissionD
               width: 64,
               height: 64,
               borderRadius: 2,
-              bgcolor: dk.white,
+              bgcolor: dk.canvas,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

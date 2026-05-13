@@ -60,7 +60,7 @@ export default function WireframeStorySlider() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: 2,
@@ -100,7 +100,7 @@ export default function WireframeStorySlider() {
                     width: "100%",
                     height: "100%",
                     borderRadius: "50%",
-                    bgcolor: dk.white,
+                    bgcolor: dk.canvas,
                     border: `2px solid ${dk.white}`,
                     display: "flex",
                     alignItems: "center",
@@ -178,7 +178,7 @@ export default function WireframeStorySlider() {
                   width: 32,
                   height: 32,
                   borderRadius: "50%",
-                  bgcolor: dk.white,
+                  bgcolor: dk.canvas,
                   color: "primary.main",
                   display: "flex",
                   alignItems: "center",

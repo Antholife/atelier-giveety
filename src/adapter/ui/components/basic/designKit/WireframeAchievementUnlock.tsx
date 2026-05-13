@@ -74,7 +74,7 @@ export default function WireframeAchievementUnlock() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: 3,
@@ -112,7 +112,7 @@ export default function WireframeAchievementUnlock() {
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: { xs: "90%", sm: 420 },
-            bgcolor: dk.white,
+            bgcolor: dk.canvas,
             borderRadius: 3,
             overflow: "hidden",
             outline: "none",

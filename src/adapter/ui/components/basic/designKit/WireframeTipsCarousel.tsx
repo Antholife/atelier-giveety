@@ -70,20 +70,33 @@ export default function WireframeTipsCarousel({
 
   const togglePlay = useCallback(() => setPlaying((v) => !v), []);
 
+  const slideGradient = fillColumnHeight
+    ? `linear-gradient(
+      152deg,
+      ${alpha(dk.white, 0.78)} 0%,
+      ${alpha(dk.surfaceMuted, 0.22)} 52%,
+      ${alpha(dk.border, 0.14)} 100%
+    )`
+    : `linear-gradient(135deg, ${alpha(dk.tertiaryLight, 0.5)} 0%, ${alpha(dk.primaryLight, 0.4)} 100%)`;
+
   const toolbarBtnSx = {
     zIndex: 1,
-    bgcolor: alpha(dk.surfaceStrong, 0.22),
-    color: dk.surfaceStrong,
-    "&:hover": { bgcolor: alpha(dk.surfaceStrong, 0.34) },
+    bgcolor: fillColumnHeight ? alpha("#000", 0.12) : alpha(dk.surfaceStrong, 0.22),
+    color: fillColumnHeight ? theme.palette.text.primary : dk.surfaceStrong,
+    "&:hover": {
+      bgcolor: fillColumnHeight ? alpha("#000", 0.18) : alpha(dk.surfaceStrong, 0.34),
+    },
   };
 
   return (
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
-        border: `1px solid ${alpha(dk.border, 0.18)}`,
-        boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
+        bgcolor: fillColumnHeight ? "transparent" : dk.canvas,
+        border: fillColumnHeight ? "none" : `1px solid ${alpha(dk.border, 0.18)}`,
+        boxShadow: fillColumnHeight
+          ? "none"
+          : `0 4px 18px ${alpha("#000", 0.06)}`,
         p:
           fillColumnHeight
             ? { xs: 1.25, sm: 1.5, md: 1.75 }
@@ -105,7 +118,7 @@ export default function WireframeTipsCarousel({
           position: "relative",
           borderRadius: 2.5,
           overflow: "hidden",
-          background: `linear-gradient(135deg, ${alpha(dk.tertiaryLight, 0.5)} 0%, ${alpha(dk.primaryLight, 0.4)} 100%)`,
+          background: slideGradient,
           ...(fillColumnHeight
             ? {
                 flex: { xs: "none", md: "0 0 auto" },
@@ -172,7 +185,7 @@ export default function WireframeTipsCarousel({
                   variant="h6"
                   sx={{
                     fontWeight: 800,
-                    color: "primary.main",
+                    color: fillColumnHeight ? "text.primary" : "primary.main",
                     lineHeight: 1.12,
                     ...(fillColumnHeight
                       ? { fontSize: { xs: "0.95rem", md: "1.05rem" } }
@@ -183,10 +196,10 @@ export default function WireframeTipsCarousel({
                 </Typography>
                 <Typography
                   sx={{
-                    color: "primary.main",
+                    color: fillColumnHeight ? "text.secondary" : "primary.main",
                     fontWeight: 500,
                     mt: fillColumnHeight ? { xs: 0.35, md: 0.45 } : 0.45,
-                    opacity: 0.88,
+                    opacity: fillColumnHeight ? 1 : 0.88,
                     lineHeight: fillColumnHeight ? 1.38 : 1.38,
                     fontSize: fillColumnHeight ? { xs: "0.78rem", md: "0.82rem" } : "0.82rem",
                   }}
@@ -206,7 +219,7 @@ export default function WireframeTipsCarousel({
               bottom: 0,
               left: 0,
               height: 3,
-              bgcolor: dk.surfaceStrong,
+              bgcolor: fillColumnHeight ? alpha("#000", 0.35) : dk.surfaceStrong,
               animation: `fillBar ${ROTATION_MS}ms linear infinite`,
               "@keyframes fillBar": {
                 from: { width: "0%" },

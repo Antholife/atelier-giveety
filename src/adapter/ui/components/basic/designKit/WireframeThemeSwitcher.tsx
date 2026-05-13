@@ -22,14 +22,19 @@ export default function WireframeThemeSwitcher() {
 
   const handleSelect = useCallback((m: Mode) => setMode(m), []);
 
-  const previewBg = mode === "dark" ? "#1a1d2b" : mode === "auto" ? `linear-gradient(90deg, ${dk.white} 50%, #1a1d2b 50%)` : dk.white;
+  const previewBg =
+    mode === "dark"
+      ? "#1a1d2b"
+      : mode === "auto"
+        ? `linear-gradient(90deg, ${dk.canvas} 50%, #1a1d2b 50%)`
+        : dk.canvas;
   const previewText = mode === "dark" ? "#fff" : dk.text;
 
   return (
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },

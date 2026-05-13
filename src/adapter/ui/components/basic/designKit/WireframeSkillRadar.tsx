@@ -84,7 +84,7 @@ export default function WireframeSkillRadar() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 8px 28px ${alpha(dk.surfaceStrong, 0.08)}`,
         p: { xs: 2, sm: 3 },

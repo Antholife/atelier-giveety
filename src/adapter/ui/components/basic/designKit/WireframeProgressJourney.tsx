@@ -38,7 +38,7 @@ export default function WireframeProgressJourney() {
       sx={{
         p: { xs: 2, sm: 3 },
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
       }}
@@ -111,7 +111,7 @@ export default function WireframeProgressJourney() {
                     ? dk.surfaceStrong
                     : isActive
                       ? dk.tertiary
-                      : dk.white,
+                      : dk.canvas,
                   color: isDone || isActive ? dk.white : dk.textMuted,
                   border: `2px solid ${
                     isDone || isActive ? "transparent" : alpha(dk.border, 0.4)

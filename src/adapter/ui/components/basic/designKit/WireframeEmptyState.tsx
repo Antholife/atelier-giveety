@@ -14,7 +14,7 @@ export default function WireframeEmptyState() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px dashed ${alpha(dk.border, 0.4)}`,
         p: { xs: 3, sm: 5 },
         textAlign: "center",

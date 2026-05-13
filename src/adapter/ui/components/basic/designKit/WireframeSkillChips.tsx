@@ -152,7 +152,7 @@ export default function WireframeSkillChips() {
                 py: 2.25,
                 borderRadius: 9999,
                 fontWeight: 700,
-                bgcolor: isSelected ? dk.surfaceAccent : dk.white,
+                bgcolor: isSelected ? dk.surfaceAccent : dk.canvas,
                 color: isSelected ? dk.surfaceStrong : dk.text,
                 border: `1px solid ${
                   isSelected ? alpha(dk.surfaceStrong, 0.35) : alpha(dk.border, 0.3)

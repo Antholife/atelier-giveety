@@ -18,7 +18,7 @@ export default function WireframeUpgradeBanner() {
       <Box
         sx={{
           borderRadius: 3,
-          bgcolor: dk.white,
+          bgcolor: dk.canvas,
           border: `1px dashed ${alpha(dk.border, 0.3)}`,
           p: 2,
           textAlign: "center",
@@ -128,7 +128,7 @@ export default function WireframeUpgradeBanner() {
               borderRadius: 9999,
               textTransform: "none",
               fontWeight: 800,
-              bgcolor: dk.white,
+              bgcolor: dk.canvas,
               color: "primary.main",
               px: 3,
               py: 1,

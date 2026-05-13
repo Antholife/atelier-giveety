@@ -62,7 +62,7 @@ export default function WireframeMissionReadOnlyCalendar({
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.16)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.05)}`,
         p: { xs: 2, sm: 2.5 },

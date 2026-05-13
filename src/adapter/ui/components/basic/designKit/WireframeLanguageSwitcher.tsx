@@ -38,7 +38,7 @@ export default function WireframeLanguageSwitcher() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -66,7 +66,7 @@ export default function WireframeLanguageSwitcher() {
               border: `1px solid ${open ? dk.tertiary : alpha(dk.border, 0.25)}`,
               cursor: "pointer",
               transition: "all 0.2s ease",
-              bgcolor: open ? alpha(dk.tertiaryLight, 0.2) : dk.white,
+              bgcolor: open ? alpha(dk.tertiaryLight, 0.2) : dk.canvas,
             }}
           >
             <Box sx={{ fontSize: 22 }}>{current.flag}</Box>
@@ -96,7 +96,7 @@ export default function WireframeLanguageSwitcher() {
                 left: 0,
                 right: 0,
                 zIndex: 10,
-                bgcolor: dk.white,
+                bgcolor: dk.canvas,
                 borderRadius: 2,
                 border: `1px solid ${alpha(dk.border, 0.18)}`,
                 boxShadow: `0 12px 32px ${alpha(dk.surfaceStrong, 0.16)}`,

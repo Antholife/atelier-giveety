@@ -44,7 +44,7 @@ export default function WireframeMessageReactions() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -153,7 +153,7 @@ export default function WireframeMessageReactions() {
                       zIndex: 10,
                       p: 0.75,
                       borderRadius: 9999,
-                      bgcolor: dk.white,
+                      bgcolor: dk.canvas,
                       border: `1px solid ${alpha(dk.border, 0.2)}`,
                       boxShadow: `0 8px 22px ${alpha(dk.surfaceStrong, 0.18)}`,
                       display: "flex",

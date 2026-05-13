@@ -320,7 +320,7 @@ function ActivityCardShell({
       sx={{
         position: "relative",
         borderRadius: 2.5,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.15)}`,
         boxShadow: `0 1px 2px ${alpha(dk.surfaceStrong, 0.04)}`,
         overflow: "hidden",
@@ -771,7 +771,7 @@ function SmartEmptyState({ dk }: { dk: DesignKitPalette }) {
             spacing={1.25}
             alignItems="center"
             sx={{
-              bgcolor: dk.white,
+              bgcolor: dk.canvas,
               border: `1px solid ${alpha(dk.border, 0.12)}`,
               borderRadius: 1.75,
               px: 1.5,
@@ -939,7 +939,7 @@ export default function WireframeActivitiesHub() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 1.5, sm: 2.5 },

@@ -198,7 +198,7 @@ export default function WireframeCommitmentTimeline() {
 
                 <Box
                   sx={{
-                    bgcolor: dk.white,
+                    bgcolor: dk.canvas,
                     border: `1px solid ${alpha(dk.border, 0.18)}`,
                     borderRadius: 2.5,
                     boxShadow: isOpen

@@ -28,9 +28,6 @@ import Image from "next/image";
 import { type MouseEvent, type ReactNode, useCallback, useMemo, useState } from "react";
 import { LanguageSwitcher } from "../../basic/common";
 
-const KC_HEADER_SHADOW =
-  "0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12)";
-
 function MarketingLink({
   href,
   children,
@@ -79,6 +76,7 @@ function DesktopHoverDropdown(props: {
         },
         [`&:hover .kf-dd-trigger`]: {
           color: `${hoverColor} !important`,
+          backgroundColor: "rgba(255, 255, 255, 0.12)",
         },
       }}
     >
@@ -93,9 +91,14 @@ function DesktopHoverDropdown(props: {
           textTransform: "none",
           fontFamily: "var(--font-mulish), sans-serif",
           fontSize: "14px",
-          fontWeight: 500,
+          fontWeight: 600,
+          letterSpacing: "0.02em",
           lineHeight: 1.2,
-          transition: "color 0.2s ease",
+          borderRadius: 2,
+          px: "14px",
+          py: "8px",
+          mx: "-14px",
+          transition: "color 0.2s ease, background-color 0.2s ease",
         }}
       >
         {label}
@@ -113,7 +116,6 @@ function DesktopHoverDropdown(props: {
           border: `1px solid ${alpha(primary, 0.2)}`,
           borderRadius: "14px",
           boxShadow: `0 18px 40px ${alpha(primary, 0.2)}`,
-          backdropFilter: "blur(8px)",
           p: "8px",
           opacity: 0,
           pointerEvents: "none",
@@ -176,6 +178,7 @@ function Header() {
   const t = useTranslations("externalPages");
   const locale = useLocale();
   const primary = theme.palette.primary.main;
+  const tertiaryMain = theme.palette.tertiary.main;
   const secondaryHover = theme.palette.secondary.main;
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -251,15 +254,19 @@ function Header() {
       my: 2,
       color: "white",
       textTransform: "none" as const,
-      mr: "32px",
+      mr: "28px",
+      px: 1.75,
+      py: 1,
       fontFamily: "var(--font-mulish), sans-serif",
-      fontWeight: 500,
+      fontWeight: 600,
       fontSize: "14px",
-      borderRadius: 0,
+      letterSpacing: "0.02em",
+      borderRadius: 2,
       minWidth: "auto",
+      transition: "color 0.2s ease, background-color 0.2s ease",
       "&:hover": {
         color: `${secondaryHover} !important`,
-        backgroundColor: "transparent",
+        backgroundColor: alpha("#fff", 0.12),
       },
     }),
     [secondaryHover],
@@ -273,12 +280,15 @@ function Header() {
         zIndex: 10,
         height: { xs: "50px", md: "90px" },
         justifyContent: "center",
-        backgroundColor: primary,
-        borderBottom: "none",
         px: { xs: 2, md: 8 },
-        boxShadow: KC_HEADER_SHADOW,
         width: "100%",
         boxSizing: "border-box",
+        backgroundColor: primary,
+        borderBottom: `2px solid ${tertiaryMain}`,
+        boxShadow: `
+          0 1px 0 ${alpha("#fff", 0.1)} inset,
+          0 8px 28px ${alpha(primary, 0.35)}
+        `,
       }}
     >
       <Container maxWidth={false} disableGutters>
@@ -318,7 +328,10 @@ function Header() {
                     alignItems: "center",
                     cursor: "pointer",
                     "&:hover .kf-dd-contact": { opacity: 1, transform: "translate(-50%, 0)", pointerEvents: "auto" },
-                    "&:hover .kf-dd-contact-tr": { color: `${secondaryHover} !important` },
+                    "&:hover .kf-dd-contact-tr": {
+                      color: `${secondaryHover} !important`,
+                      backgroundColor: "rgba(255, 255, 255, 0.12)",
+                    },
                   }}
                 >
                   <Box
@@ -332,8 +345,13 @@ function Header() {
                       textTransform: "none",
                       fontFamily: "var(--font-mulish), sans-serif",
                       fontSize: "14px",
-                      fontWeight: 500,
-                      transition: "color 0.2s ease",
+                      fontWeight: 600,
+                      letterSpacing: "0.02em",
+                      borderRadius: 2,
+                      px: "14px",
+                      py: "8px",
+                      mx: "-14px",
+                      transition: "color 0.2s ease, background-color 0.2s ease",
                     }}
                   >
                     {t("headerContact")}
@@ -351,7 +369,6 @@ function Header() {
                       border: `1px solid ${alpha(primary, 0.2)}`,
                       borderRadius: "14px",
                       boxShadow: `0 18px 40px ${alpha(primary, 0.2)}`,
-                      backdropFilter: "blur(8px)",
                       p: "8px",
                       opacity: 0,
                       pointerEvents: "none",

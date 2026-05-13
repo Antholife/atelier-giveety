@@ -54,7 +54,7 @@ export default function WireframeShareSheet() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -92,7 +92,7 @@ export default function WireframeShareSheet() {
             right: { xs: 0, sm: "auto" },
             transform: { xs: "none", sm: "translate(-50%, 50%)" },
             width: { xs: "100%", sm: 420 },
-            bgcolor: dk.white,
+            bgcolor: dk.canvas,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             borderBottomLeftRadius: { xs: 0, sm: 24 },

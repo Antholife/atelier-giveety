@@ -228,7 +228,7 @@ export default function WireframeMissionDiscoveryPage() {
               px: 1.25,
               py: 0.75,
               border: `1px solid ${alpha(dk.border, 0.25)}`,
-              bgcolor: dk.white,
+              bgcolor: dk.canvas,
               transition: "box-shadow 0.15s ease, border-color 0.15s ease",
               "&:hover": {
                 borderColor: alpha(dk.tertiary, 0.45),

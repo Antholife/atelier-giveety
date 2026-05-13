@@ -39,7 +39,7 @@ export default function WireframeReminderToast() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -117,7 +117,7 @@ export default function WireframeReminderToast() {
                   bgcolor: alpha(dk.white, 0.7),
                   color: "primary.main",
                   px: 1.5,
-                  "&:hover": { bgcolor: dk.white },
+                  "&:hover": { bgcolor: dk.canvas },
                 }}
               >
                 {s.label}

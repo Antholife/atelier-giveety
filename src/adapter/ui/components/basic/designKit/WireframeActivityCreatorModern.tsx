@@ -69,7 +69,7 @@ function SectionShell({
       sx={{
         scrollMarginTop: 96,
         borderRadius: 2.5,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.12)}`,
         overflow: "hidden",
         boxShadow: `0 2px 12px ${alpha(dk.surfaceStrong, 0.04)}`,
@@ -138,7 +138,7 @@ function CertChoiceCard({
           border: selected
             ? `2px solid ${dk.tertiary}`
             : `1px solid ${alpha(dk.border, 0.2)}`,
-          bgcolor: selected ? alpha(dk.tertiary, 0.04) : dk.white,
+          bgcolor: selected ? alpha(dk.tertiary, 0.04) : dk.canvas,
           transition: "all 0.2s ease",
           position: "relative",
           "&:hover": {
@@ -201,7 +201,7 @@ function CertChoiceCard({
           zIndex: 1,
           bgcolor: alpha(dk.white, 0.92),
           boxShadow: `0 1px 4px ${alpha(dk.border, 0.2)}`,
-          "&:hover": { bgcolor: dk.white },
+          "&:hover": { bgcolor: dk.canvas },
         }}
         onClick={(e) => {
           e.stopPropagation();
@@ -238,7 +238,7 @@ function LivePreview({
         top: { lg: 88 },
         borderRadius: 2.5,
         border: `1px solid ${alpha(dk.border, 0.15)}`,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         overflow: "hidden",
         boxShadow: `0 12px 40px ${alpha(dk.surfaceStrong, 0.08)}`,
       }}
@@ -477,7 +477,7 @@ export default function WireframeActivityCreatorModern() {
                     fontSize: 12,
                     ...(active
                       ? { bgcolor: dk.surfaceStrong, color: dk.white, "&:hover": { bgcolor: darken(dk.surfaceStrong, 0.06) } }
-                      : { bgcolor: dk.white, color: "primary.main", border: `1px solid ${alpha(dk.border, 0.2)}` }),
+                      : { bgcolor: dk.canvas, color: "primary.main", border: `1px solid ${alpha(dk.border, 0.2)}` }),
                   }}
                 >
                   {s.short}

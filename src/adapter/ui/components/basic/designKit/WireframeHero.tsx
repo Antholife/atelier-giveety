@@ -46,7 +46,7 @@ function LogoRow({
           width: 48,
           height: 48,
           borderRadius: "50%",
-          bgcolor: dk.white,
+          bgcolor: dk.canvas,
           border: `2px solid ${alpha(dk.surfaceStrong, 0.35)}`,
           cursor: "pointer",
           display: "flex",

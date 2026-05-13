@@ -68,7 +68,7 @@ export default function WireframeOrgaShowcase() {
       onMouseLeave={() => setPaused(false)}
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -116,7 +116,7 @@ export default function WireframeOrgaShowcase() {
                   width: 44,
                   height: 44,
                   borderRadius: 2,
-                  bgcolor: dk.white,
+                  bgcolor: dk.canvas,
                   color: "primary.main",
                   display: "flex",
                   alignItems: "center",

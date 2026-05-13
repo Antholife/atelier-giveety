@@ -83,7 +83,7 @@ export default function WireframeReferralCard() {
           pl: 2,
           mb: 2,
           borderRadius: 9999,
-          bgcolor: dk.white,
+          bgcolor: dk.canvas,
           border: `1px solid ${alpha(dk.border, 0.2)}`,
         }}
       >

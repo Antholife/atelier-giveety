@@ -206,7 +206,7 @@ export default function WireframeChecklist({
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: pairedLayout ? 1.25 : 2, sm: pairedLayout ? 1.5 : 2.5 },

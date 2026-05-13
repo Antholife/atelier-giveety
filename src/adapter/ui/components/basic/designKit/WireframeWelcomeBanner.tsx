@@ -71,10 +71,13 @@ export default function WireframeWelcomeBanner({
       <Box
         sx={{
           borderRadius: compact ? 2 : 3,
-          bgcolor: dk.white,
+          bgcolor: alpha(dk.white, 0.32),
+          backdropFilter: "blur(14px) saturate(160%)",
+          WebkitBackdropFilter: "blur(14px) saturate(160%)",
           border: `1px dashed ${
             isWarning ? alpha(theme.palette.warning.main, 0.45) : isInfo ? alpha(theme.palette.error.main, 0.45) : alpha(dk.border, 0.3)
           }`,
+          boxShadow: `0 0 0 1px ${alpha(dk.white, 0.2)} inset`,
           py: compact ? 1 : 2,
           px: compact ? 1.5 : undefined,
           textAlign: "center",
@@ -98,17 +101,28 @@ export default function WireframeWelcomeBanner({
         overflow: "hidden",
         ...(isBrand
           ? {
-              background: `linear-gradient(120deg, ${dk.surfaceStrong} 0%, ${dk.tertiary} 100%)`,
+              background: `linear-gradient(120deg, ${alpha(dk.surfaceStrong, 0.88)} 0%, ${alpha(dk.tertiary, 0.75)} 100%)`,
+              backdropFilter: "blur(22px) saturate(175%)",
+              WebkitBackdropFilter: "blur(22px) saturate(175%)",
+              border: `1px solid ${alpha(dk.white, 0.32)}`,
               color: dk.white,
               p: compact ? { xs: 1.75, sm: 2.25 } : { xs: 2.5, sm: 3.5 },
-              boxShadow: `0 12px 28px ${alpha(dk.surfaceStrong, 0.25)}`,
+              boxShadow: `
+                0 0 0 1px ${alpha(dk.white, 0.15)} inset,
+                0 14px 36px ${alpha(dk.surfaceStrong, 0.22)}
+              `,
             }
           : {
-              bgcolor: alpha(accentMain, compact ? (isInfo ? 0.12 : 0.1) : isInfo ? 0.15 : 0.13),
+              bgcolor: alpha(accentMain, compact ? (isInfo ? 0.07 : 0.06) : isInfo ? 0.1 : 0.08),
+              backdropFilter: "blur(20px) saturate(170%)",
+              WebkitBackdropFilter: "blur(20px) saturate(170%)",
               color: theme.palette.primary.dark,
-              border: `1px solid ${alpha(accentMain, 0.38)}`,
+              border: `1px solid ${alpha(accentMain, 0.32)}`,
               borderLeft: `4px solid ${accentMain}`,
-              boxShadow: `0 6px 16px ${alpha(accentMain, 0.12)}`,
+              boxShadow: `
+                0 0 0 1px ${alpha(dk.white, 0.22)} inset,
+                0 10px 28px ${alpha(accentMain, 0.14)}
+              `,
               p: compact ? { xs: 1.25, sm: 1.5 } : { xs: 2.5, sm: 3.5 },
             }),
       }}
@@ -297,9 +311,12 @@ export default function WireframeWelcomeBanner({
                         },
                       }
                     : {
-                        bgcolor: dk.white,
+                        bgcolor: alpha(dk.white, 0.92),
+                        backdropFilter: "blur(8px)",
+                        WebkitBackdropFilter: "blur(8px)",
                         color: "primary.main",
-                        "&:hover": { bgcolor: darken(dk.white, 0.04) },
+                        border: `1px solid ${alpha(dk.white, 0.5)}`,
+                        "&:hover": { bgcolor: alpha(dk.white, 0.98) },
                       }),
               }}
             >

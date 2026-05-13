@@ -60,7 +60,7 @@ export default function WireframeOnboardingTour() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -102,7 +102,7 @@ export default function WireframeOnboardingTour() {
               width: z.w,
               height: z.h,
               borderRadius: 1.5,
-              bgcolor: dk.white,
+              bgcolor: dk.canvas,
               border: `1px solid ${alpha(dk.border, 0.15)}`,
               boxShadow: `0 2px 6px ${alpha(dk.surfaceStrong, 0.06)}`,
             }}
@@ -142,7 +142,7 @@ export default function WireframeOnboardingTour() {
                 maxWidth: 230,
                 p: 1.5,
                 borderRadius: 2,
-                bgcolor: dk.white,
+                bgcolor: dk.canvas,
                 boxShadow: `0 12px 28px ${alpha("#000", 0.3)}`,
                 transition: "all 0.32s cubic-bezier(.4,1.4,.4,1)",
                 pointerEvents: "auto",

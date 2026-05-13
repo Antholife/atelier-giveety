@@ -74,7 +74,7 @@ export default function WireframeDragSortList() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         p: { xs: 2, sm: 2.5 },
@@ -109,7 +109,7 @@ export default function WireframeDragSortList() {
                 px: 1.5,
                 py: 1.25,
                 borderRadius: 2,
-                bgcolor: isDragging ? alpha(dk.tertiaryLight, 0.5) : dk.white,
+                bgcolor: isDragging ? alpha(dk.tertiaryLight, 0.5) : dk.canvas,
                 border: isOver ? `2px dashed ${dk.tertiary}` : `1px solid ${alpha(dk.border, 0.18)}`,
                 opacity: isDragging ? 0.6 : 1,
                 cursor: "grab",

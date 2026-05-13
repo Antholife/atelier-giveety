@@ -113,7 +113,7 @@ function StatCard({ stat, dk }: { stat: Stat; dk: DesignKitPalette }) {
         minWidth: 160,
         p: 2.25,
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 4px 18px ${alpha(dk.surfaceStrong, 0.06)}`,
         position: "relative",

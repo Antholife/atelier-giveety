@@ -35,7 +35,7 @@ export default function WireframeOrgaProfile() {
     <Box
       sx={{
         borderRadius: 3,
-        bgcolor: dk.white,
+        bgcolor: dk.canvas,
         border: `1px solid ${alpha(dk.border, 0.18)}`,
         boxShadow: `0 8px 28px ${alpha(dk.surfaceStrong, 0.08)}`,
         overflow: "hidden",
@@ -76,7 +76,7 @@ export default function WireframeOrgaProfile() {
             width: 80,
             height: 80,
             borderRadius: 3,
-            bgcolor: dk.white,
+            bgcolor: dk.canvas,
             border: `4px solid ${dk.white}`,
             display: "flex",
             alignItems: "center",

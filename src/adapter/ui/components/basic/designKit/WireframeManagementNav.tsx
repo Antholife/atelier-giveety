@@ -82,8 +82,19 @@ export default function WireframeManagementNav({
           justifyContent: "space-between",
           flexWrap: "wrap",
           gap: fullBleedToolbar ? { xs: 1.25, sm: 2 } : 2,
-          background: `linear-gradient(90deg, ${dk.surface} 0%, ${alpha(dk.primaryLight, 0.5)} 55%, ${alpha(dk.surfaceMuted, 0.9)} 100%)`,
-          boxShadow: fullBleedToolbar ? "none" : `inset 0 1px 0 ${alpha(dk.white, 0.7)}`,
+          isolation: "isolate",
+          /** Proche du stepper Design Kit : peu de transparence + flou (frosted) */
+          background: `linear-gradient(
+            90deg,
+            ${dk.surface} 0%,
+            ${alpha(dk.primaryLight, 0.96)} 50%,
+            ${alpha(dk.surfaceMuted, 0.99)} 100%
+          )`,
+          backdropFilter: "blur(22px) saturate(180%)",
+          WebkitBackdropFilter: "blur(22px) saturate(180%)",
+          boxShadow: fullBleedToolbar
+            ? `inset 0 1px 0 ${alpha(dk.frost, 0.45)}`
+            : `inset 0 1px 0 ${alpha(dk.frost, 0.55)}`,
         }}
       >
         <Stack direction="row" alignItems="center" spacing={2} flexWrap="wrap">
@@ -107,7 +118,7 @@ export default function WireframeManagementNav({
                   width: 40,
                   height: 40,
                   borderRadius: "50%",
-                  bgcolor: dk.white,
+                  bgcolor: dk.canvas,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
