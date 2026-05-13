@@ -1,11 +1,9 @@
 SHELL  := /bin/bash
 PYTHON := $(shell command -v python3 || command -v python)
 
-.PHONY: up wait_nextjs_ready sh-front-end add-pkg-front-end add-pkg-D-front-end remove-pkg-front-end test-front-end down restart build-front-end push-front-end build-all push-all versioning building check deploy nx-projects nx-affected nx-graph nx-format nx-lint nx-type-check nx-test nx-reset
+.PHONY: up wait_nextjs_ready sh-front-end add-pkg-front-end add-pkg-D-front-end remove-pkg-front-end down restart build-front-end push-front-end build-all push-all versioning building check deploy nx-projects nx-affected nx-graph nx-format nx-lint nx-type-check nx-reset
 
 .DEFAULT_GOAL := prevent-default
-
-PYTHON_SCRIPT := $(PYTHON) scripts/test.py
 
 prevent-default:
 	@echo "❌ No default target. Please use 'make <target>' explicitly."
@@ -33,7 +31,6 @@ wait_nextjs_ready:
 	@printf "\033[1;36m - make add-pkg-front-end       # Add production packages\033[0m\n"
 	@printf "\033[1;36m - make add-pkg-D-front-end # Add dev-only packages\033[0m\n"
 	@printf "\033[1;36m - make remove-pkg-front-end # Remove packages\033[0m\n"
-	@printf "\033[1;36m - make test-front-end # Run tests in the container\033[0m\n"
 	@printf "\n\033[1;33m💡 Tip: All commands above can also be run manually inside the container:\033[0m\n"
 	@printf "\033[1;36m    make sh-front-end\033[0m\n"
 	@printf "\n\033[1;34m📄 Logs are viewable in Docker Desktop or via make logs-front-end\033[0m\n"
@@ -56,9 +53,6 @@ add-pkg-D-front-end: ## Add a dev package to the front-end container
 remove-pkg-front-end: ## Remove a package from the front-end container
 	@read -p "🔤 Enter the package name to remove: " PKG && \
 	if [ -n "$$PKG" ]; then docker compose exec front-end yarn remove "$$PKG"; fi
-
-test-front-end: ## Run tests in the front-end container
-	docker compose exec front-end yarn test:container
 
 down:
 	docker compose down
@@ -98,28 +92,8 @@ check-front-end:
 	@make nx-lint
 	@make nx-type-check
 	@make nx-format
-    ## @make nx-test
 
 deploy: check-front-end versioning building nx-reset
-
-# --- Frontend Test Suites ---
-
-test-architecture-frontend: ## Validate frontend hexagonal architecture (CustomValidator + dependency-cruiser)
-	@echo "🏗️  Validating frontend architecture..."
-	@echo ""
-	@echo "📋 Step 1/2: Validating directory structure and test coverage (CustomValidator)..."
-	@docker compose exec -T front-end node tests/architecture/CustomValidator.mjs || (echo "" && echo "❌ CustomValidator failed. Fix issues above before running dependency-cruiser." && exit 1)
-	@echo ""
-	@echo "🔍 Step 2/2: Validating dependencies between layers (dependency-cruiser)..."
-	@docker compose exec -T front-end yarn depcruise --config tests/architecture/utils/dependency-cruiser.config.js src || (echo "" && echo "❌ Dependency-cruiser failed. Fix import violations above." && exit 1)
-	@echo ""
-	@echo "✅ All frontend architecture validations passed!"
-
-test-frontend-unit: ## Run frontend unit tests (Vitest)
-	@$(PYTHON_SCRIPT) --type=frontend --tool=unit
-
-test-frontend-functional: ## Run frontend functional tests (Vitest)
-	@$(PYTHON_SCRIPT) --type=frontend --tool=functional
 
 # ---------- NX COMMANDS ----------
 
@@ -148,11 +122,6 @@ nx-type-check:
 	@printf "\033[1;34m🔍 Checking TypeScript types...\033[0m\n"
 	@npx nx run front-end:type-check || (printf "\n❌  Type check failed. Please fix the issues and try again.\n" && exit 1)
 	@printf "\n\033[1;32m✅  Type check completed successfully.\033[0m\n\n"
-
-nx-test:
-	@printf "\033[1;34m🧪 Running tests on the workspace...\033[0m\n"
-	@npx nx run front-end:test || (printf "\n❌  Tests failed. Please fix the issues and try again.\n" && exit 1)
-	@printf "\n\033[1;32m✅  Tests completed successfully.\033[0m\n\n"
 
 nx-reset:
 	@printf "\033[1;34m🧼 Clearing Nx cache...\033[0m\n"

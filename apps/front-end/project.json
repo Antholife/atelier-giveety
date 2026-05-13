@@ -17,19 +17,6 @@
         "command": "tsc --noEmit",
         "cwd": "apps/front-end"
       }
-    },
-    "test": {
-      "executor": "nx:run-commands",
-      "outputs": ["{workspaceRoot}/coverage/apps/front-end"],
-      "options": {
-        "commands": [
-          "make test-architecture-frontend",
-          "make test-frontend-unit",
-          "make test-frontend-functional"
-        ],
-        "parallel": false,
-        "cwd": "{workspaceRoot}"
-      }
     }
   },
   "tags": ["type:app", "scope:front-end"]

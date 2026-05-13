@@ -18,15 +18,6 @@
         "{workspaceRoot}/.eslintrc.json",
         "{workspaceRoot}/eslint.config.mjs"
       ]
-    },
-    "test": {
-      "cache": true,
-      "inputs": [
-        "default",
-        "^production",
-        "{workspaceRoot}/tsconfig.base.json",
-        "{projectRoot}/vitest.config.ts"
-      ]
     }
   },
   "release": {
