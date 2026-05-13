@@ -9,16 +9,12 @@
 /**
  * Main content padding top values
  *
- * Compensates for fixed header and stepper heights to prevent content
- * from being hidden behind fixed navigation elements.
- *
- * Values are calculated based on:
- * - Mobile: header height (70px) + stepper height (auto, ~80px) ≈ 150px
- * - Desktop: header height (90px) + stepper height (92px) = 182px
+ * Compensates for the fixed AppBar height so content is not hidden behind
+ * the header. Values match the header height defined in `Header.tsx`.
  */
 export const MAIN_CONTENT_PADDING_TOP = {
-  /** Mobile view: header (70px) + stepper (auto, ~80px) = ~150px */
-  MOBILE: "150px",
-  /** Desktop view: header (90px) + stepper (92px) = 182px */
-  DESKTOP: "182px",
+  /** Mobile view: AppBar height = 70px */
+  MOBILE: "70px",
+  /** Desktop view: AppBar height = 90px */
+  DESKTOP: "90px",
 } as const;
