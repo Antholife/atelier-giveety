@@ -228,7 +228,7 @@ const Button = ({
   );
 
   return (
-    // eslint-disable-next-line front-end/use-conventional-component
+    // eslint-disable-next-line design-kit/use-conventional-component
     <MuiButton
       type={type}
       onClick={onClick}

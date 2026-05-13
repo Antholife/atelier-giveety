@@ -1,10 +1,10 @@
 import { DesignKitPreview } from "@/adapter/ui/components/basic/designKit";
-import { createMetadataForPage } from "@/infra/services";
+import { createMetadataForPage } from "@/infra/metadata";
 
 export function generateMetadata() {
-  return createMetadataForPage("atelier-ui-ux");
+  return createMetadataForPage("design-kit");
 }
 
-export default function AtelierPage() {
+export default function DesignKitHomePage() {
   return <DesignKitPreview />;
 }

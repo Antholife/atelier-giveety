@@ -116,7 +116,7 @@ import { useIsMobile } from "@/adapter/ui/utils/mediaQueries";
 const DESIGN_KIT_PREVIEW_CONTRIB_NAV_GAP_PX = 56;
 
 /** Persistance du thème sombre du carrousel Design Kit (preview uniquement). */
-const DESIGN_KIT_PREVIEW_DARK_LS = "atelier.designKit.darkMode.v1";
+const DESIGN_KIT_PREVIEW_DARK_LS = "design-kit.preview.darkMode.v1";
 
 /** Durée du fondu entre les deux calques de fond (clair ↔ sombre). */
 const DESIGN_KIT_BG_CROSSFADE_MS = 1200;

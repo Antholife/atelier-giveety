@@ -5,4 +5,4 @@
  * translated titles and descriptions from the i18n catalog.
  */
 
-export type RouteKey = "atelier-ui-ux";
+export type RouteKey = "design-kit";

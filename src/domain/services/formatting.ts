@@ -63,11 +63,11 @@ export function formatDate(dateString: string, locale: string): string {
  * - Removing special characters
  *
  * @param str - String to slugify
- * @returns URL-friendly slug (e.g., "Atelier UI" → "atelier-ui")
+ * @returns URL-friendly slug (e.g., "Design Kit" → "design-kit")
  *
  * @example
  * ```typescript
- * slugify("Atelier UI UX") // "atelier-ui-ux"
+ * slugify("Design Kit UI UX") // "design-kit-ui-ux"
  * slugify("Événements") // "evenements"
  * ```
  */

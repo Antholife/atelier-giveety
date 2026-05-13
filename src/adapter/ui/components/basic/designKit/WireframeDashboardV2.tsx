@@ -60,8 +60,8 @@ import WireframeWelcomeBanner from "./WireframeWelcomeBanner";
 import type { DismissRetention } from "./DismissRetentionDialog";
 
 /** Préférences « ne plus afficher » (dashboard démo, persistance locale navigateur). */
-const LS_DASH_TIPS_FOREVER = "atelier.designKit.dashboard.dismissTipsForever.v1";
-const LS_DASH_PREMIERS_FOREVER = "atelier.designKit.dashboard.dismissPremiersPasForever.v1";
+const LS_DASH_TIPS_FOREVER = "design-kit.dashboard.dismissTipsForever.v1";
+const LS_DASH_PREMIERS_FOREVER = "design-kit.dashboard.dismissPremiersPasForever.v1";
 
 function readDismissForeverLs(key: string): boolean {
   if (typeof window === "undefined") return false;

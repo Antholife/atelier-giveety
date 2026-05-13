@@ -1,11 +1,11 @@
-# for dev environment
+# Dev local — Next.js (Design Kit Anthony Chahat / Giveety)
 
-name: front-end
+name: giveety-design-kit
 
 services:
-  front-end:
-    container_name: front-end
-    image: front-end
+  giveety-design-kit:
+    container_name: giveety-design-kit
+    image: giveety-design-kit:dev
     build:
       context: .
       dockerfile: Dockerfile

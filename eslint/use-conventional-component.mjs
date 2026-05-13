@@ -1,3 +1,5 @@
+/** @rule Interdit certains imports MUI directs au profit des wrappers projet. */
+
 const rule = {
   meta: {
     type: "problem",
@@ -6,7 +8,7 @@ const rule = {
     },
     messages: {
       avoidMui:
-        "❌ Do not use MUI '{{ name }}' directly. Use our '{{ replacement }}' component instead.",
+        "Do not use MUI '{{ name }}' directly. Use our '{{ replacement }}' component instead.",
     },
     schema: [
       {

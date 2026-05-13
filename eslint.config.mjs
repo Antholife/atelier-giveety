@@ -2,14 +2,13 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
 import { defineConfig, globalIgnores } from "eslint/config";
-import eslintProjectRulesPlugin from "./tools/dev/index.mjs";
+import useConventionalComponent from "./eslint/use-conventional-component.mjs";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   prettier,
   globalIgnores([
-    // Default ignores of eslint-config-next:
     "**/.next/**",
     "**/out/**",
     "**/build/**",
@@ -18,12 +17,14 @@ const eslintConfig = defineConfig([
   ]),
   {
     plugins: {
-      "front-end": {
-        rules: eslintProjectRulesPlugin.customRules,
+      "design-kit": {
+        rules: {
+          "use-conventional-component": useConventionalComponent,
+        },
       },
     },
     rules: {
-      "front-end/use-conventional-component": [
+      "design-kit/use-conventional-component": [
         "error",
         {
           forbidden: {
@@ -31,7 +32,19 @@ const eslintConfig = defineConfig([
           },
         },
       ],
-      ...eslintProjectRulesPlugin.rules,
+      "object-curly-spacing": ["error", "always"],
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+        },
+      ],
+      "max-depth": ["warn", { max: 3 }],
+      "max-nested-callbacks": ["warn", { max: 3 }],
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
       "@next/next/no-html-link-for-pages": "off",
       "react-hooks/set-state-in-effect": "off",
       "no-console": [
