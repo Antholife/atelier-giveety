@@ -119,9 +119,6 @@ const DESIGN_KIT_PREVIEW_CONTRIB_NAV_GAP_PX = 56;
 /** Persistance du thème sombre du carrousel Design Kit (preview uniquement). */
 const DESIGN_KIT_PREVIEW_DARK_LS = "atelier.designKit.darkMode.v1";
 
-/** Sur le 1er slide uniquement : alternance auto clair / sombre pour le fond (sans écrire le choix en local). */
-const DESIGN_KIT_WELCOME_AUTO_THEME_MS = 15000;
-
 /** Durée du fondu entre les deux calques de fond (clair ↔ sombre). */
 const DESIGN_KIT_BG_CROSSFADE_MS = 1200;
 
@@ -999,29 +996,9 @@ export default function DesignKitPreview() {
     }
   }, []);
 
-  /** Bascule démo (1er slide) — ne persiste pas pour ne pas écraser la préférence utilisateur. */
-  const toggleDarkModeAuto = useCallback(() => {
-    setDarkMode((d) => !d);
-  }, []);
-
-  const restoreDarkFromStorage = useCallback(() => {
-    try {
-      if (typeof window !== "undefined") {
-        setDarkMode(localStorage.getItem(DESIGN_KIT_PREVIEW_DARK_LS) === "1");
-      }
-    } catch {
-      /* ignore */
-    }
-  }, []);
-
   return (
     <ThemeProvider theme={previewTheme}>
-      <DesignKitPreviewContent
-        darkMode={darkMode}
-        onDarkModeChange={onDarkModeChange}
-        toggleDarkModeAuto={toggleDarkModeAuto}
-        restoreDarkFromStorage={restoreDarkFromStorage}
-      />
+      <DesignKitPreviewContent darkMode={darkMode} onDarkModeChange={onDarkModeChange} />
     </ThemeProvider>
   );
 }
@@ -1029,13 +1006,9 @@ export default function DesignKitPreview() {
 function DesignKitPreviewContent({
   darkMode,
   onDarkModeChange,
-  toggleDarkModeAuto,
-  restoreDarkFromStorage,
 }: {
   darkMode: boolean;
   onDarkModeChange: (next: boolean) => void;
-  toggleDarkModeAuto: () => void;
-  restoreDarkFromStorage: () => void;
 }) {
   const theme = useTheme();
   const dk = useMemo(() => designKitPalette(theme), [theme]);
@@ -1126,16 +1099,6 @@ function DesignKitPreviewContent({
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [next, prev]);
-
-  /** Slide Accueil seulement : fond qui alterne clair / sombre toutes les 15 s. En sortie → préférence sauvegardée. */
-  useEffect(() => {
-    if (current !== 0) {
-      restoreDarkFromStorage();
-      return undefined;
-    }
-    const id = window.setInterval(toggleDarkModeAuto, DESIGN_KIT_WELCOME_AUTO_THEME_MS);
-    return () => window.clearInterval(id);
-  }, [current, toggleDarkModeAuto, restoreDarkFromStorage]);
 
   return (
     <Box
